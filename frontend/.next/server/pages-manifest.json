@@ -1,0 +1,10 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/dashboard": "pages/dashboard.js",
+  "/api/stats": "pages/api/stats.js",
+  "/analysis/trends": "pages/analysis/trends.js",
+  "/analysis/comparables": "pages/analysis/comparables.js",
+  "/admin/users": "pages/admin/users.js"
+}
