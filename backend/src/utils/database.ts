@@ -192,40 +192,6 @@ async executeQuery<T extends QueryResultRow>(
   }
 
   /**
-   * Executes a transaction with proper isolation and retry logic
-   */
-  async executeTransaction<T>(
-    queries: { query: string; params?: any[] }[],
-    options: TransactionOptions = {}
-  ): Promise<T[][]> {
-    const { 
-      isolationLevel = 'READ COMMITTED',
-      timeout = this.DEFAULT_TIMEOUT 
-    } = options;
-
-    return this.executeWithRetry(async (client) => {
-      try {
-        await client.query(`BEGIN TRANSACTION ISOLATION LEVEL ${isolationLevel}`);
-        await client.query(`SET statement_timeout = ${timeout}`);
-        
-        const results = [];
-        for (const { query, params } of queries) {
-          const result = await client.query(query, params);
-          results.push(result.rows);
-        }
-        
-        await client.query('COMMIT');
-        return results;
-      } catch (error) {
-        await client.query('ROLLBACK');
-        throw error;
-      } finally {
-        await client.query('SET statement_timeout = 0');
-      }
-    });
-  }
-
-  /**
    * Executes an insert operation with proper validation
    */
   async executeInsert<T extends Record<string, any>>(
