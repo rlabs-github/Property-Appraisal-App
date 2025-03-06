@@ -1,7 +1,8 @@
 // src/utils/logger.ts
 import winston from 'winston';
 
-const logger = winston.createLogger({
+// Winston logger configuration
+const winstonLogger = winston.createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: winston.format.combine(
     winston.format.timestamp(),
@@ -17,23 +18,13 @@ const logger = winston.createLogger({
   ]
 });
 
-export const createLogger = (service: string) => {
-  return {
-    info: (message: string, meta?: any) => logger.info({ service, message, ...meta }),
-    error: (message: string, meta?: any) => logger.error({ service, message, ...meta }),
-    warn: (message: string, meta?: any) => logger.warn({ service, message, ...meta }),
-    debug: (message: string, meta?: any) => logger.debug({ service, message, ...meta })
-  };
-};
+// Create a service-specific logger function
+export const createLogger = (service: string) => ({
+  info: (message: string, meta?: any) => winstonLogger.info({ service, message, ...meta }),
+  error: (message: string, meta?: any) => winstonLogger.error({ service, message, ...meta }),
+  warn: (message: string, meta?: any) => winstonLogger.warn({ service, message, ...meta }),
+  debug: (message: string, meta?: any) => winstonLogger.debug({ service, message, ...meta })
+});
 
-export const logger = {
-  info: (message: string, meta?: Record<string, unknown>) => {
-    console.log(`[INFO] ${message}`, meta || '');
-  },
-  error: (message: string, meta?: Record<string, unknown>) => {
-    console.error(`[ERROR] ${message}`, meta || '');
-  },
-  warn: (message: string, meta?: Record<string, unknown>) => {
-    console.warn(`[WARN] ${message}`, meta || '');
-  }
-};
+// Use `winstonLogger` for actual logging and remove the redundant `logger` object
+export { winstonLogger as logger };
