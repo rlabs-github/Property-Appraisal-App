@@ -1,51 +1,40 @@
 # Stage 1: Build the Next.js app
 FROM node:20-alpine AS builder
 
-# Set working directory
 WORKDIR /app
 
 RUN npm install -g npm@latest
 
-# Copy package.json and package-lock.json
-COPY frontend/package*.json ./
+# Copy package.json first
+COPY package*.json ./
 
-# Install dependencies (clean install for production)
+# Install dependencies
 RUN npm ci
 
 # Copy application source code
-COPY frontend/ .
+COPY . .
 
-# Ensure ESLint is disabled for the entire build process
+# Disable checks for build
 ENV NEXT_DISABLE_ESLINT=1
-
-# Ensure there are no issues before running build
-RUN printenv | grep NEXT
-
-# Modify Dockerfile to Disable TypeScript Checks temporarily
 ENV NEXTJS_IGNORE_ESLINT=1
 ENV NEXTJS_IGNORE_TYPECHECK=1
 
 # Build the Next.js app
 RUN npm run build
 
-# Stage 2: Run the built Next.js app
+# Stage 2: Serve the app
 FROM node:18-alpine AS runner
 
-# Set working directory
 WORKDIR /app
 
-# Copy only the necessary build artifacts from builder
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
-# Set environment variables for production
 ENV NODE_ENV=production
 ENV PORT=3000
 
-# Expose the Next.js server port
 EXPOSE 3000
-
-# Start the Next.js application
 CMD ["node", "server"]
+

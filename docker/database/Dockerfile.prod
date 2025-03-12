@@ -1,15 +1,14 @@
 # Database Development & Production Dockerfile (docker/database/Dockerfile.dev/prod)
 FROM postgres:14-alpine
 
+# Ensure necessary directories exist
+RUN mkdir -p /docker-entrypoint-initdb.d
+
 # Copy configuration
-COPY database/config/postgresql.conf /etc/postgresql/postgresql.conf
+COPY config/postgresql.conf /etc/postgresql/postgresql.conf
 
-# Development-specific initialization
-COPY database/migrations/ /docker-entrypoint-initdb.d/
+# Copy database migrations and seed files
+COPY migrations/ /docker-entrypoint-initdb.d/
+COPY seeds/ /docker-entrypoint-initdb.d/
 
-
-RUN mkdir -p /docker-entrypoint-initdb.d/
-COPY database/seeds/. /docker-entrypoint-initdb.d/
-
-# Custom configuration
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
