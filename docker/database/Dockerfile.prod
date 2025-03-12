@@ -6,7 +6,10 @@ COPY database/config/postgresql.conf /etc/postgresql/postgresql.conf
 
 # Development-specific initialization
 COPY database/migrations/ /docker-entrypoint-initdb.d/
-COPY database/seeds/ /docker-entrypoint-initdb.d/
+
+
+RUN mkdir -p /docker-entrypoint-initdb.d/
+COPY database/seeds/. /docker-entrypoint-initdb.d/
 
 # Custom configuration
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
