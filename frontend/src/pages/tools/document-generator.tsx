@@ -1,6 +1,6 @@
 // src/pages/tools/DocumentGenerationPage.tsx
 import { type NextPage } from 'next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import { DocumentGenerator } from '@/components/appraisal-tools/documents/DocumentGenerator';
 import { useApp } from '@/contexts/AppContext';
 

@@ -1,6 +1,6 @@
 // src/pages/analysis/comparables.tsx
 import { type NextPage } from 'next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import ComparablesAnalysis from '@/components/analysis/ComparablesAnalysis';
 
 const ComparablesPage: NextPage = () => {

@@ -1,6 +1,6 @@
 // src/pages/admin/settings.tsx
 import { type NextPage } from 'next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import AdminSettings from '@/components/admin/AdminSettings';
 
 const SettingsPage: NextPage = () => {

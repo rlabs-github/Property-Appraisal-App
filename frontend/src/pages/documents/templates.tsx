@@ -6,7 +6,7 @@ import { FileText, Plus, Edit2, Trash2, Download, Upload } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { useApp } from '@/contexts/AppContext';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 
 interface Template {
   id: string;
@@ -35,7 +35,7 @@ const TemplatesPage: NextPage = () => {
   ]);
   const [selectedTemplate, setSelectedTemplate] = useState<Template | null>(null);
   const [editMode, setEditMode] = useState(false);
-  const { showNotification, setIsLoading } = useApp();
+  const { showNotification, setIsLoading } = useApp(); 
 
   const handleTemplateUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -44,7 +44,7 @@ const TemplatesPage: NextPage = () => {
       // Simulated upload delay
       setTimeout(() => {
         setIsLoading(false);
-        showNotification('Template uploaded successfully', 'success');
+        showNotification('success', 'Template uploaded successfully');
       }, 1000);
     }
   };

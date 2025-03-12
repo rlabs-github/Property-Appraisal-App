@@ -1,5 +1,4 @@
-import { describe, it, expect } from 'vitest';
-import { render, screen, fireEvent } from '../utils/test-utils';
+import { render, screen, fireEvent } from 'src/tests/utils/test-utils';
 import FormBuilder from '../appraisal-tools/forms/FormBuilder';
 
 describe('FormBuilder', () => {

@@ -1,6 +1,6 @@
 // src/pages/tools/form-builder.tsx
 import { type NextPageWithLayout } from '@/types/next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import FormBuilder from '@/components/appraisal-tools/forms/FormBuilder';
 import { useApp } from '@/contexts/AppContext';
 

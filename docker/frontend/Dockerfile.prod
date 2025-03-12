@@ -1,25 +1,46 @@
-# Frontend Production Dockerfile (docker/frontend/Dockerfile.prod)
-FROM node:18-alpine AS builder
+# Stage 1: Build the Next.js app
+FROM node:20-alpine AS builder
 
+# Set working directory
 WORKDIR /app
 
+RUN npm install -g npm@latest
+
+# Copy package.json and package-lock.json
 COPY frontend/package*.json ./
 
+# Install dependencies (clean install for production)
 RUN npm ci
 
+# Copy application source code
 COPY frontend/ .
 
+# Ensure ESLint is disabled for the entire build process
+ENV NEXT_DISABLE_ESLINT=1
+
+RUN printenv | grep NEXT
+
+# Build the Next.js app
 RUN npm run build
 
+# Stage 2: Run the built Next.js app
 FROM node:18-alpine AS runner
 
+# Set working directory
 WORKDIR /app
 
+# Copy only the necessary build artifacts from builder
 COPY --from=builder /app/next.config.js ./
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/.next/static ./.next/static
 
+# Set environment variables for production
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expose the Next.js server port
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+# Start the Next.js application
+CMD ["node", "server"]

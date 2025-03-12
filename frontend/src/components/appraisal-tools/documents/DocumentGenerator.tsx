@@ -18,7 +18,11 @@ interface ExportSettings {
   compression: boolean;
 }
 
-export const DocumentGenerator: React.FC = () => {
+interface DocumentGeneratorProps {
+  onGenerate: (generationData: GeneratorData) => Promise<void>;
+}
+
+export const DocumentGenerator: React.FC<DocumentGeneratorProps> = ({ onGenerate }) => {
   const [templates, setTemplates] = useState([]);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [generatorData, setGeneratorData] = useState<GeneratorData>({

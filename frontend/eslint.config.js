@@ -1,37 +1,38 @@
-import js from '@eslint/js'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
+import js from '@eslint/js';
+import ts from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
+import next from 'eslint-config-next';
 
-export default {
-  extends: [
-    js.configs.recommended,
-    'eslint-config-next', // Extend the default Next.js ESLint config
-    'plugin:react-hooks/recommended', // Add React hooks linting
-  ],
-  plugins: {
-    'react-hooks': reactHooks,
-    'react-refresh': reactRefresh,
-  },
-  rules: {
-    'react-refresh/only-export-components': [
-      'warn',
-      { allowConstantExport: true },
-    ],
-  },
-  parserOptions: {
-    ecmaVersion: 2020,
-    sourceType: 'module',
-  },
-  env: {
-    browser: true,
-    es2020: true,
-  },
-  overrides: [
-    {
-      files: ['**/*.{ts,tsx}'],
-      parserOptions: {
-        project: './tsconfig.json', // Point to your main tsconfig
+export default [
+  js.configs.recommended,
+  next,
+  {
+    plugins: {
+      '@typescript-eslint': ts,
+      react: react,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    languageOptions: {
+      parser: tsParser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    settings: {
+      react: {
+        version: 'detect', // Automatically detect React version
       },
     },
-  ],
-};
+    rules: {
+      'react/react-in-jsx-scope': 'off', // Not needed with Next.js
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
+  },
+];

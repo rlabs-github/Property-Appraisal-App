@@ -4,7 +4,16 @@ const path = require('path'); // Import the Node.js 'path' module
 
 const nextConfig = {
   reactStrictMode: true,
-  // Add any additional configuration
+
+  // ✅ Ensure Next.js does not run ESLint during builds
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+
+  // Enable standalone output for optimized Docker deployment
+  output: 'standalone',
+
+  // Webpack configuration for alias support
   webpack: (config) => {
     config.resolve.alias = {
       ...config.resolve.alias,

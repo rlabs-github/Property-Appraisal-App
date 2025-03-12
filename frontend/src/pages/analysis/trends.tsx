@@ -1,6 +1,6 @@
 // src/pages/analysis/trends.tsx
 import { type NextPageWithLayout } from '@/types/next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import MarketTrends from '@/components/analysis/MarketTrends';
 
 const TrendsPage: NextPageWithLayout = () => {

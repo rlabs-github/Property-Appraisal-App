@@ -6,7 +6,7 @@ interface ProtectedPageProps {
   children: React.ReactNode;
 }
 
-export const ProtectedPage = ({ children }: ProtectedPageProps) => {
+const ProtectedPage = ({ children }: ProtectedPageProps) => {
   const { user, isLoading } = useAuth();
   const router = useRouter();
 
@@ -23,3 +23,4 @@ export const ProtectedPage = ({ children }: ProtectedPageProps) => {
 
   return <>{children}</>;
 };
+export default ProtectedPage;

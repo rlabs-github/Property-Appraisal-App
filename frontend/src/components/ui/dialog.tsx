@@ -52,6 +52,13 @@ const DialogHeader = ({
   <div className={cn('flex flex-col space-y-1.5', className)} {...props} />
 );
 
+const DialogTitle = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLHeadingElement>) => (
+  <h2 className={cn('text-lg font-semibold', className)} {...props} />
+);
+
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
@@ -60,5 +67,6 @@ export {
   DialogTrigger,
   DialogContent,
   DialogHeader,
+  DialogTitle,
   DialogClose,
 };

@@ -1,6 +1,6 @@
 // src/pages/tools/calculator.tsx
 import { type NextPageWithLayout } from '@/types/next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import ValueCalculator from 'src/components/appraisal-tools/ValueCalculator';
 
 const CalculatorPage: NextPageWithLayout = () => {

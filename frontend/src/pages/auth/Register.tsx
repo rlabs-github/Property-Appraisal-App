@@ -1,10 +1,10 @@
 // pages/auth/Register.tsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '/Development/PROPERTY-APPRAISAL-PLATFORM/frontend/src/contexts/AuthContext';
-import { Button } from '/Development/PROPERTY-APPRAISAL-PLATFORM/frontend/src/components/ui/button';
-import { Input } from '/Development/PROPERTY-APPRAISAL-PLATFORM/frontend/src/components/ui/input';
-import { Card, CardHeader, CardContent } from '/Development/PROPERTY-APPRAISAL-PLATFORM/frontend/src/components/ui/card';
+import { useAuth } from '../../contexts/AuthContext';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Card, CardHeader, CardContent } from '../../components/ui/card';
 
 const Register = () => {
   const [email, setEmail] = useState('');

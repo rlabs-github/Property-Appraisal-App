@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'primary' | 'secondary' | 'outline' | 'ghost';
-  size?: 'sm' | 'md' | 'lg';
+  size?: 'sm' | 'md' | 'lg' | "icon";   //✅ Allow "icon"
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
@@ -27,6 +27,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({
     sm: 'h-8 px-3 text-sm',
     md: 'h-10 px-4',
     lg: 'h-12 px-6 text-lg',
+    icon: 'h-10 w-10 p-2 rounded-full flex items-center justify-center' // ✅ Added "icon"
   };
 
   return (

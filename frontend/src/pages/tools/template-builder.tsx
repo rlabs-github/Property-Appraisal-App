@@ -1,5 +1,5 @@
 import { type NextPage } from 'next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import { TemplateBuilder } from '@/components/appraisal-tools/templates/TemplateBuilder';
 import { useApp } from '@/contexts/AppContext';
 

@@ -28,7 +28,7 @@ const ValueCalculator = () => {
     });
   };
 
-  const handleInputChange = (field, value) => {
+  const handleInputChange = (field: string, value: number) => {
     setInputs(prev => ({
       ...prev,
       [field]: value
@@ -52,7 +52,7 @@ const ValueCalculator = () => {
             <input
               type="number"
               value={inputs.rentalIncome}
-              onChange={(e) => handleInputChange('rentalIncome', e.target.value)}
+              onChange={(e) => handleInputChange('rentalIncome', Number(e.target.value))}
               className="w-full p-2 border rounded-md"
               placeholder="Enter monthly rental income"
             />
@@ -65,7 +65,7 @@ const ValueCalculator = () => {
             <input
               type="number"
               value={inputs.occupancyRate}
-              onChange={(e) => handleInputChange('occupancyRate', e.target.value)}
+              onChange={(e) => handleInputChange('occupancyRate', Number(e.target.value))}
               className="w-full p-2 border rounded-md"
               placeholder="Enter occupancy rate"
               min="0"
@@ -80,7 +80,7 @@ const ValueCalculator = () => {
             <input
               type="number"
               value={inputs.operatingExpenses}
-              onChange={(e) => handleInputChange('operatingExpenses', e.target.value)}
+              onChange={(e) => handleInputChange('operatingExpenses', Number(e.target.value))}
               className="w-full p-2 border rounded-md"
               placeholder="Enter monthly expenses"
             />
@@ -93,7 +93,7 @@ const ValueCalculator = () => {
             <input
               type="number"
               value={inputs.capRate}
-              onChange={(e) => handleInputChange('capRate', e.target.value)}
+              onChange={(e) => handleInputChange('capRate', Number(e.target.value))}
               className="w-full p-2 border rounded-md"
               placeholder="Enter cap rate"
               step="0.1"

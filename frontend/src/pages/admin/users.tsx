@@ -1,5 +1,5 @@
 import { type NextPageWithLayout } from '@/types/next';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
+import ProtectedPage from '@/components/auth/ProtectedPage';
 import UserManagement from '@/components/admin/UserManagement';
 
 const UsersPage: NextPageWithLayout = () => {

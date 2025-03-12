@@ -15,8 +15,29 @@ export const useAuth = () => {
     },
   });
 
+  // ✅ Add login function
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Invalid login credentials');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
+  };
+
   return {
     user,
     isLoading,
+    login, // ✅ Now `login` is part of the returned object
   };
 };

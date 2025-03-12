@@ -27,7 +27,7 @@ const ReportsList = () => {
     }
   ];
 
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string): string => {
     switch (status) {
       case 'Final': return 'bg-green-100 text-green-800';
       case 'Draft': return 'bg-yellow-100 text-yellow-800';

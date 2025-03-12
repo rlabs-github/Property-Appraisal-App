@@ -1,8 +1,8 @@
 // pages/tools/form-filler.tsx
 import { type NextPage } from 'next';
 import { useState, useEffect } from 'react';
-import { ProtectedPage } from '@/components/auth/ProtectedPage';
-import { FormFiller } from '@/components/appraisal-tools/forms/FormFiller';
+import ProtectedPage from '@/components/auth/ProtectedPage';
+import FormFiller from '@/components/appraisal-tools/forms/FormFiller';
 import { useApp } from '@/contexts/AppContext';
 
 const FormFillerPage: NextPage = () => {

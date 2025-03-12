@@ -28,25 +28,21 @@ interface TemplateSettings {
   }>;
 }
 
-export const TemplateBuilder: React.FC = () => {
+interface TemplateBuilderProps {
+  onSave: (templateData: Template) => Promise<void>;
+}
+
+export const TemplateBuilder: React.FC<TemplateBuilderProps> = ({ onSave }) => {
   const [template, setTemplate] = useState<Template | null>(null);
   const [showPreview, setShowPreview] = useState(false);
 
   const handleSave = async () => {
     if (!template) return;
-    
+
     try {
-      const response = await fetch('/api/templates', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(template),
-      });
-      
-      if (!response.ok) throw new Error('Failed to save template');
-      
-      // Handle successful save
+      await onSave(template); // 🔹 Calls the parent-provided function
     } catch (error) {
-      // Handle error
+      console.error('Error saving template:', error);
     }
   };
 
@@ -82,8 +78,8 @@ export const TemplateBuilder: React.FC = () => {
         <div className="col-span-1">
           <TemplateSettings
             settings={template?.settings}
-            onChange={(settings) => 
-              setTemplate(prev => prev ? { ...prev, settings } : null)
+            onChange={(settings) =>
+              setTemplate((prev) => (prev ? { ...prev, settings } : null))
             }
           />
         </div>

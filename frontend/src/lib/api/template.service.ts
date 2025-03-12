@@ -38,7 +38,7 @@ export const templateService = {
   },
 
   async generateDocument(templateId: string, data: any): Promise<Blob> {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/templates/${templateId}/generate`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/templates/${templateId}/generate`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
