@@ -4,7 +4,7 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: .
+      context: ../
       dockerfile: docker/frontend/Dockerfile.prod
     ports:
       - "3000:3000"
@@ -16,7 +16,7 @@ services:
 
   backend:
     build:
-      context: .
+      context: ../
       dockerfile: docker/backend/Dockerfile.prod
     ports:
       - "4000:4000"
@@ -28,7 +28,7 @@ services:
 
   db:
     build:
-      context: .
+      context: ../
       dockerfile: docker/database/Dockerfile.prod
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
