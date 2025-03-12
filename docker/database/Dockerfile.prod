@@ -2,13 +2,16 @@
 FROM postgres:14-alpine
 
 # Ensure necessary directories exist
-RUN mkdir -p /docker-entrypoint-initdb.d
+RUN mkdir -p /docker-entrypoint-initdb.d/seeds
 
 # Copy configuration
 COPY config/postgresql.conf /etc/postgresql/postgresql.conf
 
-# Copy database migrations and seed files
+# Copy database migrations
 COPY migrations/ /docker-entrypoint-initdb.d/
-COPY seeds/ /docker-entrypoint-initdb.d/
 
-CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+# Copy database seed files
+COPY seeds/ /docker-entrypoint-initdb.d/seeds/
+
+# Start PostgreSQL with the correct configuration
+CMD ["postgres", "-D", "/var/lib/postgresql/data", "-c", "config_file=/etc/postgresql/postgresql.conf"]
