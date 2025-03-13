@@ -1,6 +1,6 @@
 // src/routes/documents.routes.ts
 import { Router } from 'express';
-import { DocumentsController } from '../controllers/documents.controller';
+import { DocumentsController } from '../controllers/documents/documents.controller';
 
 const router = Router();
 const documentsController = new DocumentsController();

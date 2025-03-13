@@ -1,7 +1,7 @@
 // tests/setup.ts
 // Jest global setup file
 
-import { db } from '../src/config/database'; // Remove if not using a database
+import db from '../src/config/database'; // Remove if not using a database
 
 beforeAll(async () => {
   console.log('Setting up Jest test environment...');

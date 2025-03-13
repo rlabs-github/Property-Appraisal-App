@@ -1,5 +1,5 @@
 // src/services/documents.service.ts
-import { db } from '../../config/database';
+import db from '../../config/database';
 import { Document } from '../../types';
 import { NotFoundError } from '../../utils/errors';
 

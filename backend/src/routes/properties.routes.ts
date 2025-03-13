@@ -1,6 +1,6 @@
 // backend/src/routes/properties.routes.ts
 import { Router } from 'express';
-import { PropertiesController } from '../controllers/properties.controller';
+import { PropertiesController } from '../controllers/properties/properties.controller';
 
 const router = Router();
 const controller = new PropertiesController();
