@@ -28,7 +28,7 @@ services:
 
   db:
     build:
-      context: ../database
+      context: ../database   # Ensure this points to `database/`
       dockerfile: ../docker/database/Dockerfile.prod
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
