@@ -2,6 +2,13 @@
 import db from '../../config/database';
 import { Document } from '../../types';
 import { NotFoundError } from '../../utils/errors';
+import { Request } from 'express';
+
+declare module 'express-serve-static-core' {
+  interface Request {
+    tenantId?: string;
+  }
+}
 
 export class DocumentsService {
   async getAllDocuments(): Promise<Document[]> {

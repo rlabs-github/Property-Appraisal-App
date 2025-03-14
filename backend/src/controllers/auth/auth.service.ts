@@ -1,8 +1,11 @@
-import { getAuth } from 'firebase-admin/auth';
+import { getAuth } from "firebase-admin/auth";
 
-const auth = getAuth();
-const userCredential = await auth.signInWithEmailAndPassword(email, password
-    if (!email || !password) {
-        throw new Error('Email and password are required');
-      }
-);
+async verifyUser(idToken: string) {
+  if (!idToken) {
+    throw new Error("ID token is required.");
+  }
+
+  // Verify the ID token
+  const decodedToken = await getAuth().verifyIdToken(idToken);
+  return decodedToken;
+}
