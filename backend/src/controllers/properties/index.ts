@@ -1,3 +1,3 @@
 // src/controllers/properties/index.ts
-export { PropertyController } from './property.controller';
+export { PropertiesController } from './properties.controller';
 export { propertyValidator } from './validators';

@@ -1,8 +1,8 @@
 // src/server.ts
 import dotenv from 'dotenv';
 import app from './app';  // ✅ Import the Express app, NOT "./config/server"
-import { createLogger } from './utils/logger';
-import { connectDatabase } from './config/database';
+import { createLogger } from '@utils/logger';
+import connectDatabase from '@config/database';
 
 dotenv.config();
 

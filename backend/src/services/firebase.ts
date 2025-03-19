@@ -1,7 +1,7 @@
 // backend/src/services/firebase.ts
 import { initializeApp, cert, type App } from 'firebase-admin/app';
 import { getAuth, type Auth } from 'firebase-admin/auth';
-import { createLogger } from '../utils/logger';
+import { createLogger } from '@utils/logger';
 
 const logger = createLogger('firebase');
 

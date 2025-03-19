@@ -1,5 +1,5 @@
 // services/documents/template.service.ts
-import db from '../../config/database';
+import db from '@config/database';
 
 export class TemplateService {
     async createTemplate(template: any) {

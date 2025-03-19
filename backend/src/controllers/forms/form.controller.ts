@@ -1,12 +1,12 @@
 // src/controllers/forms/form.controller.ts (New file)
 import { Request, Response, NextFunction } from 'express';
-import { FormService } from '@/services/forms/form.service';
+import { FormBuilderService } from '@services/forms/builder.service';
 
 export class FormController {
-  private formService: FormService;
+  private formService: FormBuilderService;
 
   constructor() {
-    this.formService = new FormService();
+    this.formService = new FormBuilderService();
   }
 
   create = async (req: Request, res: Response, next: NextFunction) => {

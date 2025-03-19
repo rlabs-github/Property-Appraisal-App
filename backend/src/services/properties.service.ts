@@ -1,6 +1,9 @@
 // backend/src/services/properties.service.ts
-import db from '../config/database';
+import { db } from '@config/database';
 import { Property } from '../types';
+
+console.log('DB Object:', db);
+console.log('DB Query Method:', db.query);
 
 export class PropertiesService {
   async getAll(): Promise<Property[]> {

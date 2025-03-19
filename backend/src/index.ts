@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { Pool } from 'pg';
-import { DatabaseUtils } from '@utils/database';
+import { db as database } from '@config/database';  // Rename import
 import { createLogger } from '@utils/logger';
 import config from '@/config';
 

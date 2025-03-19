@@ -1,7 +1,7 @@
 // backend/src/routes/api.routes.ts
 import { Router } from 'express';
-import { propertiesRoutes } from './properties.routes';
-import { templatesRoutes } from './templates.routes';
+import propertiesRoutes from '../routes';
+import templatesRoutes from '../routes';
 import { authMiddleware } from '../middleware/auth';
 
 const router = Router();
