@@ -32,3 +32,4 @@ export class DocumentsService {
     return result.rows[0];
   }
 }
+export default DocumentsService;

@@ -12,7 +12,7 @@ export class AuthController {
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { email, password } = req.body;
-      const result = await this.authService.login(email, password);
+      const result = await this.authService.login({email, password});
       res.json(result);
     } catch (error) {
       next(error);

@@ -1,6 +1,6 @@
 // src/controllers/documents/document.controller.ts
 import { Request, Response, NextFunction } from 'express';
-import DocumentService from '../../services/documents/documents.service';
+import { DocumentsService } from '../../services/documents/documents.service';
 
 // Extend Express Request to include `tenantId`
 declare module 'express-serve-static-core' {
@@ -10,10 +10,10 @@ declare module 'express-serve-static-core' {
 }
 
 export class DocumentsController {
-  private documentService: DocumentService;
+  private documentService: DocumentsService;
 
   constructor() {
-    this.documentService = new DocumentService();
+    this.documentService = new DocumentsService();
   }
 
   create = async (req: Request, res: Response, next: NextFunction) => {
