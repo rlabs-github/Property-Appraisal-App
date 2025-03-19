@@ -29,5 +29,5 @@ export class AuthController {
   };
 }
 
-export const loginValidator = (req, res, next) => { /* validation logic */ };
-export const registerValidator = (req, res, next) => { /* validation logic */ };
+export { loginValidator, registerValidator } from './validators';
+export { AuthController } from './auth.controller';
