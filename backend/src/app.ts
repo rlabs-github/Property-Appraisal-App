@@ -1,7 +1,8 @@
 import express, { Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
-import AppDataSource, { connectDatabase } from "./config/database";
+import pool, { connectDatabase } from "./config/database";
+
 
 // Load environment variables
 dotenv.config();
