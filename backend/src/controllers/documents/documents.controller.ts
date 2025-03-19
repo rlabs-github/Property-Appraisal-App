@@ -1,6 +1,6 @@
 // src/controllers/documents/document.controller.ts
 import { Request, Response, NextFunction } from 'express';
-import DocumentService from 'C:/Users/rober/Property-Appraisal-App/backend/src/services/documents/documents.service';
+import DocumentService from '../../services/documents/documents.service';
 
 // Extend Express Request to include `tenantId`
 declare module 'express-serve-static-core' {
@@ -9,7 +9,7 @@ declare module 'express-serve-static-core' {
   }
 }
 
-export class DocumentController {
+export class DocumentsController {
   private documentService: DocumentService;
 
   constructor() {
