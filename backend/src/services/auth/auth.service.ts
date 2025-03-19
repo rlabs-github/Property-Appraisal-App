@@ -1,8 +1,10 @@
 // src/services/auth.service.ts
+import { AuthService } from '../../services/auth/auth.service';
 import { UnauthorizedError } from '../../utils/errors';
 import { User } from '../../types';
 import { auth } from '../firebase';
 import { LoginCredentials, AuthResponse } from '../../types/auth';  // Add these imports
+import { db } from '../config/database';
 
 export class AuthService {
   private allowedEmails = ['client@example.com', 'admin@example.com'];
