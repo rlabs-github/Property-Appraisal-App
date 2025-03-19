@@ -12,7 +12,9 @@ export class TemplateController {
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tenantId } = req;
-      const template = await this.templateService.createTemplate(tenantId, req.body);
+      if (!tenantId) return res.status(400).json({ error: 'Tenant ID is required' });
+
+      const template = await this.templateService.createTemplate(req.body);
       res.status(201).json(template);
     } catch (error) {
       next(error);
@@ -21,8 +23,7 @@ export class TemplateController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { tenantId } = req;
-      const templates = await this.templateService.listTemplates(tenantId);
+      const templates = await this.templateService.listTemplates();
       res.json(templates);
     } catch (error) {
       next(error);
@@ -31,9 +32,8 @@ export class TemplateController {
 
   get = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { tenantId } = req;
       const { id } = req.params;
-      const template = await this.templateService.getTemplate(tenantId, id);
+      const template = await this.templateService.getTemplate(id);
       res.json(template);
     } catch (error) {
       next(error);
@@ -42,9 +42,8 @@ export class TemplateController {
 
   update = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { tenantId } = req;
       const { id } = req.params;
-      const template = await this.templateService.updateTemplate(tenantId, id, req.body);
+      const template = await this.templateService.updateTemplate(id, req.body);
       res.json(template);
     } catch (error) {
       next(error);
@@ -53,9 +52,8 @@ export class TemplateController {
 
   delete = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { tenantId } = req;
       const { id } = req.params;
-      await this.templateService.deleteTemplate(tenantId, id);
+      await this.templateService.deleteTemplate(id);
       res.status(204).send();
     } catch (error) {
       next(error);
