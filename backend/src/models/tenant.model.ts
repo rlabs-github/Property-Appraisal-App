@@ -1,4 +1,3 @@
-/ models/tenant.model.ts
 export interface Tenant {
   id: string;
   name: string;
