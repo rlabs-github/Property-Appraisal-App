@@ -1,8 +1,8 @@
+// src/app.ts
 import express, { Application } from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import pool, { connectDatabase } from "./config/database";
-
 
 // Load environment variables
 dotenv.config();
@@ -19,19 +19,5 @@ app.get("/", (req, res) => {
     res.send("Backend is up and running!");
 });
 
-// Start server and connect to the database
-const startServer = async () => {
-    try {
-        await connectDatabase();
-        const PORT = process.env.PORT || 3000;
-        app.listen(PORT, () => {
-            console.log(`Server is running on http://localhost:${PORT}`);
-        });
-    } catch (error) {
-        console.error("Failed to start server:", error);
-    }
-};
-
-startServer();
-
+// ✅ REMOVE `startServer()`, let `server.ts` handle it
 export default app;
