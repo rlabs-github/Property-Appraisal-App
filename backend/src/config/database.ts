@@ -21,24 +21,25 @@ pool.on('error', (err) => {
   process.exit(-1);
 });
 
-export const query = async (text: string, params?: any[]) => {
-  const start = Date.now();
-  try {
-    const res = await pool.query(text, params);
-    const duration = Date.now() - start;
-    logger.debug('Executed query', { text, duration, rows: res.rowCount });
-    return res;
-  } catch (error) {
-    logger.error('Query error', { text, error });
-    throw error;
-  }
+export const db = {
+  query: async (text: string, params?: any[]) => {
+    const start = Date.now();
+    try {
+      const res = await pool.query(text, params);
+      const duration = Date.now() - start;
+      logger.debug('Executed query', { text, duration, rows: res.rowCount });
+      return res;
+    } catch (error) {
+      logger.error('Query error', { text, error });
+      throw error;
+    }
+  },
+  connectDatabase: async () => {
+    await pool.connect();
+    console.log('Database connected successfully');
+  },
+  getClient: () => pool.connect(),
 };
 
-export const connectDatabase = async () => {
-  await pool.connect();
-  console.log("Database connected successfully");
-};
+export default db;
 
-export const getClient = () => pool.connect();
-
-export default pool;
