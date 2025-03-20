@@ -1,33 +1,18 @@
-// src/controllers/auth/auth.controller.ts
-import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '@/services/auth/auth.service';
+// src/controllers/auth/validators.ts
+import { body } from 'express-validator';
 
-export class AuthController {
-  private authService: AuthService;
+export const loginValidator = [
+  body('email').isEmail().withMessage('Invalid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+];
 
-  constructor() {
-    this.authService = new AuthService();
-  }
-
-  login = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { email, password } = req.body;
-      const result = await this.authService.login({email, password});
-      res.json(result);
-    } catch (error) {
-      next(error);
+export const registerValidator = [
+  body('email').isEmail().withMessage('Invalid email'),
+  body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters long'),
+  body('confirmPassword').custom((value, { req }) => {
+    if (value !== req.body.password) {
+      throw new Error('Passwords do not match');
     }
-  };
-
-  register = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const result = await this.authService.register(req.body);
-      res.status(201).json(result);
-    } catch (error) {
-      next(error);
-    }
-  };
-}
-
-export { loginValidator, registerValidator } from './validators';
-export { AuthController } from './auth.controller';
+    return true;
+  }),
+];

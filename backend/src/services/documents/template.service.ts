@@ -11,11 +11,13 @@ export class TemplateService {
         return result.rows[0];
     }
 
-    async listTemplates() {
-        console.log(`Fetching all templates`);
-        const result = await db.query('SELECT * FROM templates');
+    async listTemplates(tenantId: string) {
+        const result = await db.query(
+          'SELECT * FROM templates WHERE tenant_id = $1',
+          [tenantId]
+        );
         return result.rows;
-    }
+      }      
 
     async getTemplate(id: string) {
         console.log(`Fetching template with ID: ${id}`);

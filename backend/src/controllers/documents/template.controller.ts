@@ -23,12 +23,18 @@ export class TemplateController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const templates = await this.templateService.listTemplates();
-      res.json(templates);
+        const { tenantId } = req;
+        if (!tenantId) {
+            return res.status(400).json({ error: "Missing tenantId" });  // ✅ Handle missing tenantId
+        }
+
+        const templates = await this.templateService.listTemplates(tenantId);
+        res.json(templates);
     } catch (error) {
-      next(error);
+        next(error);
     }
   };
+
 
   get = async (req: Request, res: Response, next: NextFunction) => {
     try {

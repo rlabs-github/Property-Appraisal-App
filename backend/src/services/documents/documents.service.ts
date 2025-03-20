@@ -16,20 +16,24 @@ export class DocumentsService {
     return result.rows;
   }
 
-  async getDocumentById(id: string): Promise<Document> {
-    const result = await db.query('SELECT * FROM documents WHERE id = $1', [id]);
-    if (!result.rows[0]) {
-      throw new NotFoundError('Document not found');
-    }
-    return result.rows[0];
+  async getDocumentById(tenantId: string, id: string): Promise<Document | null> {
+    const query = 'SELECT * FROM documents WHERE tenant_id = $1 AND id = $2';
+    const result = await db.query(query, [tenantId, id]);
+    return result.rows[0] || null;
   }
 
-  async createDocument(data: Partial<Document>): Promise<Document> {
+  async createDocument(tenantId: string, data: any) {
     const result = await db.query(
-      'INSERT INTO documents (property_id, type, status, url, created_by) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-      [data.propertyId, data.type, data.status, data.url, data.createdBy]
+      'INSERT INTO documents (tenant_id, name, content) VALUES ($1, $2, $3) RETURNING *',
+      [tenantId, data.name, data.content]
     );
     return result.rows[0];
+  }  
+  
+  async listDocuments(tenantId: string): Promise<Document[]> {
+    const query = 'SELECT * FROM documents WHERE tenant_id = $1';
+    const result = await db.query(query, [tenantId]);
+    return result.rows;
   }
 }
 export default DocumentsService;
