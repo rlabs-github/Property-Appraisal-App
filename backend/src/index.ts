@@ -56,7 +56,7 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
 // Health check route
 app.get('/health', async (_req: Request, res: Response) => {
   try {
-    await db.executeQuery('SELECT 1');
+    await db.query('SELECT 1'); // Test query method
     res.json({ 
       status: 'healthy',
       timestamp: new Date().toISOString(),

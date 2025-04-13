@@ -21,7 +21,7 @@ export class FormController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const forms = await this.formService.listForms(); // ✅ fixed method call
+      const forms = await this.formService.listForms(tenantId); // ✅ pass the tenantId
       res.json(forms);
     } catch (error) {
       next(error);

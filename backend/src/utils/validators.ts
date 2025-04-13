@@ -1,4 +1,6 @@
 // src/utils/validators.ts
+import { AppError } from '@/utils/errors';
+
 export const validateRequired = (value: any, fieldName: string): void => {
     if (value === undefined || value === null || value === '') {
       throw new AppError(400, `${fieldName} is required`);
