@@ -1,4 +1,6 @@
 // types/document.ts
+import { TemplateField } from '@/types/template'; // or wherever you defined it
+
 export interface Document {
     id: string;
     propertyId: string;

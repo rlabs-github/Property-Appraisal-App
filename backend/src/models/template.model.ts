@@ -1,4 +1,6 @@
 // models/template.model.ts
+import { TemplateField } from '@/types/template'; // or wherever you defined it
+
 export interface Template {
     id: string;
     name: string;

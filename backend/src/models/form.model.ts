@@ -1,4 +1,6 @@
 // models/form.model.ts
+import { FormSection } from '@/types/form';
+
 export interface Form {
     id: string;
     name: string;
