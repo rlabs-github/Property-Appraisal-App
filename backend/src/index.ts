@@ -7,6 +7,8 @@ import { Pool } from 'pg';
 import { db as database } from '@config/database';  // Rename import
 import { createLogger } from '@utils/logger';
 import config from '@/config';
+import db from './config/database';
+
 
 // Initialize logger
 const logger = createLogger('Server');
@@ -24,7 +26,6 @@ const app = express();
 
 // Initialize database
 const pool = new Pool(config.db);
-export const db = new DatabaseUtils(pool);
 
 // Test database connection
 pool.connect()
