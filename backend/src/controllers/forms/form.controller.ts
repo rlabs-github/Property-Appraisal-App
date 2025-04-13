@@ -2,6 +2,12 @@
 import { Request, Response, NextFunction } from 'express';
 import { FormBuilderService } from '@services/forms/builder.service';
 
+declare module 'express-serve-static-core' {
+  interface Request {
+    tenantId?: string;
+  }
+}
+
 export class FormController {
   private formService: FormBuilderService;
 
@@ -21,6 +27,7 @@ export class FormController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { tenantId } = req;
       const forms = await this.formService.listForms(tenantId); // ✅ pass the tenantId
       res.json(forms);
     } catch (error) {

@@ -20,8 +20,8 @@ export class FormBuilderService {
         return result.rows[0];
     }
 
-    async listForms(tenantId: string) {
-        const result = await db.query('SELECT * FROM forms WHERE tenant_id = $1', [tenantId]);
+    async listForms() {
+        const result = await db.query('SELECT * FROM forms');
         return result.rows;
     }     
 }

@@ -2,6 +2,7 @@
 import dotenv from 'dotenv';
 import app from './app';  // ✅ Import the Express app, NOT "./config/server"
 import { createLogger } from '@utils/logger';
+import { db } from './config/database';
 import connectDatabase from '@config/database';
 
 dotenv.config();
@@ -12,7 +13,7 @@ const PORT = process.env.PORT || 3000;
 // ✅ Connect to the database before starting the server
 const startServer = async () => {
   try {
-    await connectDatabase();
+    await db.connectDatabase();
     const server = app.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT}`);
     });
