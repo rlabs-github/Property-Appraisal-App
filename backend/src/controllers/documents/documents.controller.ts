@@ -68,4 +68,13 @@ export class DocumentsController {
       next(error);
     }
   };
+
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const docs = await this.documentService.getAllDocuments();
+      res.json(docs);
+    } catch (error) {
+      next(error);
+    }
+  };
 }
