@@ -12,7 +12,7 @@ export class FormController {
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tenantId } = req;
-      const form = await this.formService.createForm(tenantId, req.body);
+      const form = await this.formService.createForm(req.body);
       res.status(201).json(form);
     } catch (error) {
       next(error);
