@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 import app from './app';  // ✅ Import the Express app, NOT "./config/server"
 import { createLogger } from '@utils/logger';
-import { db } from './config/database';
+import { db } from './config/database'; // Fixed connectDatabase is not callable
 import connectDatabase from '@config/database';
 
 dotenv.config();
