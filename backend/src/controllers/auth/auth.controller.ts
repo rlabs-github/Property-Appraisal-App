@@ -32,4 +32,13 @@ export class AuthController {
       next(error);
     }
   };
+
+  getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      // Implement logic to decode JWT or use session
+      res.json({ user: req.user || null });
+    } catch (error) {
+      next(error);
+    }
+  };
 }
