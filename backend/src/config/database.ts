@@ -41,5 +41,10 @@ export const db = {
   getClient: () => pool.connect(),
 };
 
+export const shutdown = async () => {
+  await pool.end();
+  logger.info('Database pool has been shut down.');
+};
+
 export default db;
 

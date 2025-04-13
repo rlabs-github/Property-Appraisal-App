@@ -1,13 +1,14 @@
 // src/index.ts
+// src/index.ts
 import path from 'path';
 import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-import { Pool } from 'pg';
-import { db as database } from '@config/database';  // Rename import
-import { createLogger } from '@utils/logger';
+
 import config from '@/config';
-import db from './config/database';
+import { createLogger } from '@utils/logger';
+import { db, shutdown } from '@config/database'; // ✅ Consolidated import
+
 
 
 // Initialize logger
@@ -24,11 +25,8 @@ if (result.error) {
 // Create Express app
 const app = express();
 
-// Initialize database
-const pool = new Pool(config.db);
-
-// Test database connection
-pool.connect()
+// ✅ REPLACE with this
+db.connectDatabase()
   .then(() => logger.info('Database connected successfully', {
     host: config.db.host,
     database: config.db.database
@@ -108,15 +106,14 @@ const gracefulShutdown = async (signal: string): Promise<void> => {
   });
 
   try {
-    await pool.end();
+    await shutdown();
     logger.info('Database connections closed');
-    
     logger.info('Graceful shutdown completed');
     process.exit(0);
   } catch (err) {
     logger.error('Error during shutdown:', { error: err });
     process.exit(1);
-  }
+  }  
 };
 
 // Handle shutdown signals
