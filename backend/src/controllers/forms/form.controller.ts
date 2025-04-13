@@ -28,6 +28,9 @@ export class FormController {
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tenantId } = req;
+      if (!tenantId) {
+        return res.status(400).json({ error: 'Missing tenantId'})
+      }
       const forms = await this.formService.listForms(tenantId); // ✅ pass the tenantId
       res.json(forms);
     } catch (error) {
