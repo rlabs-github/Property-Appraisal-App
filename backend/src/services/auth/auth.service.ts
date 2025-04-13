@@ -1,5 +1,4 @@
 // src/services/auth.service.ts
-import { AuthService } from '@services/auth/auth.service';
 import { UnauthorizedError } from '../../utils/errors';
 import { User } from '../../types';
 import { auth } from '../firebase';
