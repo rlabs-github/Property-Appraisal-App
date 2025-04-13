@@ -12,7 +12,7 @@ export class FormController {
   create = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { tenantId } = req;
-      const form = await this.formService.createForm(req.body);
+      const form = await this.formService.createForm(req.body); // ✅ fixed signature
       res.status(201).json(form);
     } catch (error) {
       next(error);
@@ -21,8 +21,7 @@ export class FormController {
 
   list = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { tenantId } = req;
-      const forms = await this.formService.listForms(tenantId);
+      const forms = await this.formService.listForms(); // ✅ fixed method call
       res.json(forms);
     } catch (error) {
       next(error);
