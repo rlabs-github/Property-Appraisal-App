@@ -15,6 +15,9 @@ interface Config {
     secret: string;
     expiresIn: string;
   };
+  gcp: {
+    bucketName: string;
+  };
 }
 
 const config: Config = {
@@ -39,6 +42,11 @@ const config: Config = {
   jwt: {
     secret: process.env.JWT_SECRET || 'your-secret-key-here',
     expiresIn: '1d'
+  },
+
+  // GCP Configuration
+  gcp: {
+    bucketName: process.env.GCP_BUCKET_NAME || 'default-bucket',
   }
 };
 
