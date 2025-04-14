@@ -1,7 +1,6 @@
 // src/controllers/auth/auth.controller.ts
 import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '@services/auth/auth.service';
-import { LoginCredentials } from 'src/types/auth';
 
 export class AuthController {
   private authService: AuthService;
@@ -9,25 +8,36 @@ export class AuthController {
   constructor() {
     this.authService = new AuthService();
   }
+
+  // Frontend sends ID token, backend verifies and returns user
   login = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const credentials: LoginCredentials = req.body;
-      const result = await this.authService.login(credentials);
-      res.cookie('token', result.token, { 
+      const authHeader = req.headers.authorization;
+      const idToken = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+
+      if (!idToken) {
+        return res.status(401).json({ message: 'Missing ID token' });
+      }
+
+      const result = await this.authService.authenticateByToken(idToken);
+
+      // Optional: Set secure cookie if needed
+      res.cookie('token', idToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'strict'
       });
+
       res.json(result);
     } catch (error) {
       next(error);
     }
   };
 
+  // Optional: remove this unless doing admin-side user provisioning
   register = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const result = await this.authService.register(req.body);
-      res.status(201).json(result);
+      res.status(403).json({ message: 'Registration should be handled on the frontend' });
     } catch (error) {
       next(error);
     }
@@ -35,8 +45,7 @@ export class AuthController {
 
   getCurrentUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      // Implement logic to decode JWT or use session
-      res.json({ user: req.user || null });
+      res.json({ user: (req as any).user || null });
     } catch (error) {
       next(error);
     }
