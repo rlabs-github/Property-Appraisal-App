@@ -1,5 +1,4 @@
 // src/index.ts
-// src/index.ts
 import path from 'path';
 import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
