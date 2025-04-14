@@ -19,6 +19,9 @@ export class PropertiesService {
   }
 
   async create(data: Omit<Property, 'id'>): Promise<Property> {
+    if (!data.name || !data.tenant_id || !data.address) {
+      throw new Error('Missing required property fields: name, address, or tenant_id');
+    }    
     const query = `
       INSERT INTO properties (name, address, tenant_id, created_at, updated_at)
       VALUES ($1, $2, $3, NOW(), NOW())
