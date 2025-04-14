@@ -2,6 +2,7 @@
 import { UnauthorizedError } from '../../utils/errors';
 import { User } from '../../types';
 import { auth } from '../firebase';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'firebase/auth';
 import { LoginCredentials, AuthResponse } from '../../types';  // Add these imports
 import { db } from '@config/database';
 
@@ -15,7 +16,8 @@ export class AuthService {
     }
 
     try {
-      const userCredential = await auth.signInWithEmailAndPassword(
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
         credentials.email, 
         credentials.password
       );
@@ -34,7 +36,8 @@ export class AuthService {
     }
 
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
         userData.email,
         userData.password
       );
