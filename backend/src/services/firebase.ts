@@ -39,7 +39,7 @@ class FirebaseService {
   /**
    * Verify Firebase ID token
    */
-  public async verifyIdToken(token: string) {
+  public async verifyIdToken(token: string): Promise<DecodedIdToken> {
     try {
       const decodedToken = await this.auth.verifyIdToken(token);
       return decodedToken;
@@ -52,7 +52,7 @@ class FirebaseService {
   /**
    * Get user by UID
    */
-  public async getUser(uid: string) {
+  public async getUser(uid: string): Promise<UserRecord> {
     try {
       const userRecord = await this.auth.getUser(uid);
       return userRecord;
@@ -61,11 +61,11 @@ class FirebaseService {
       throw error;
     }
   }
-
+  
   /**
    * Create custom token
    */
-  public async createCustomToken(uid: string, claims?: object) {
+  public async createCustomToken(uid: string, claims?: object): Promise<string> {
     try {
       const token = await this.auth.createCustomToken(uid, claims);
       return token;
@@ -73,7 +73,7 @@ class FirebaseService {
       logger.error('Error creating custom token:', error);
       throw error;
     }
-  }
+  }  
 
   /**
    * Get auth instance
