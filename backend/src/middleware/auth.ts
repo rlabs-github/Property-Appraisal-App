@@ -1,22 +1,31 @@
 // backend/src/middleware/auth.ts
 import { Request, Response, NextFunction } from 'express';
-import { auth } from '../services/firebase';
+import { firebase } from '../services/firebase'; // updated to use firebase singleton
 
-export const authMiddleware = async (
+export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const token = req.headers.authorization?.split('Bearer ')[1];
-    if (!token) {
-      return res.status(401).json({ error: 'No token provided' });
-    }
+  const authHeader = req.headers.authorization;
 
-    const decodedToken = await auth.verifyIdToken(token);
-    req.user = decodedToken;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      error: 'Unauthorized',
+      code: 'auth/missing-token'
+    });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = await firebase.verifyIdToken(token);
+    (req as any).user = decoded;
     next();
   } catch (error) {
-    res.status(401).json({ error: 'Unauthorized' });
+    return res.status(403).json({
+      error: 'Invalid or expired token',
+      code: 'auth/invalid-token'
+    });
   }
 };
