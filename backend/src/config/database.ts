@@ -5,11 +5,11 @@ import { createLogger } from '@utils/logger';
 const logger = createLogger('database');
 
 const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  password: process.env.POSTGRES_PASSWORD,
-  host: process.env.POSTGRES_HOST,
+  user: String(process.env.POSTGRES_USER || 'postgres'),
+  password: String(process.env.POSTGRES_PASSWORD || 'postgres'),
+  host: String(process.env.POSTGRES_HOST || 'localhost'),
   port: parseInt(process.env.POSTGRES_PORT || '5432'),
-  database: process.env.POSTGRES_DB,
+  database: String(process.env.POSTGRES_DB || 'appraisal_db'),
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   max: 20,
   idleTimeoutMillis: 30000,
