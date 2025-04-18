@@ -3,7 +3,7 @@ import path from 'path';
 import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
-
+import { apiRoutes } from './routes/api.routes';
 import config from '@/config';
 import { createLogger } from '@utils/logger';
 import { db, shutdown } from '@config/database'; // ✅ Consolidated import
@@ -73,6 +73,9 @@ app.get('/health', async (_req: Request, res: Response) => {
     });
   }
 });
+
+// Mount API routes
+app.use('/api', apiRoutes); // ✅ This enables /api/auth/*
 
 // Global error handling middleware
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
