@@ -1,5 +1,7 @@
 // src/config/firebase.ts
 import * as admin from 'firebase-admin';
+import dotenv from 'dotenv';
+dotenv.config(); // ✅ Load env vars here FIRST
 
 // ✅ Add this BEFORE initializeApp
 console.log('[FIREBASE INIT DEBUG]', {
