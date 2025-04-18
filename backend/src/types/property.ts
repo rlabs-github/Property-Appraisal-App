@@ -9,3 +9,14 @@ export interface Property {
     ownerId: string;
     metadata?: Record<string, any>;
   }
+
+  export interface PropertyInput {
+    name: string;
+    address: string;
+    tenant_id: string;
+  }
+  
+  export interface PropertyUpdate {
+    name?: string;
+    address?: string;
+  }

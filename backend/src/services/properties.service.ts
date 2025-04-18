@@ -1,9 +1,7 @@
 // backend/src/services/properties.service.ts
+// backend/src/services/properties.service.ts 
 import { db } from '@config/database';
-import { Property } from '../types';
-
-console.log('DB Object:', db);
-console.log('DB Query Method:', db.query);
+import { Property, PropertyInput, PropertyUpdate } from '../types/property';
 
 export class PropertiesService {
   async getAll(): Promise<Property[]> {
@@ -18,10 +16,7 @@ export class PropertiesService {
     return result.rows[0] || null;
   }
 
-  async create(data: Omit<Property, 'id'>): Promise<Property> {
-    if (!data.name || !data.tenant_id || !data.address) {
-      throw new Error('Missing required property fields: name, address, or tenant_id');
-    }    
+  async create(data: PropertyInput): Promise<Property> {
     const query = `
       INSERT INTO properties (name, address, tenant_id, created_at, updated_at)
       VALUES ($1, $2, $3, NOW(), NOW())
@@ -35,7 +30,7 @@ export class PropertiesService {
     return result.rows[0];
   }
 
-  async update(id: string, data: Partial<Property>): Promise<Property | null> {
+  async update(id: string, data: PropertyUpdate): Promise<Property | null> {
     const query = `
       UPDATE properties
       SET name = $1, address = $2, updated_at = NOW()
@@ -51,3 +46,4 @@ export class PropertiesService {
     await db.query(query, [id]);
   }
 }
+
