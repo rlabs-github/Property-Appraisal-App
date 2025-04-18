@@ -1,48 +1,17 @@
-// backend/src/services/firebase.ts
-import { initializeApp, cert, type App } from 'firebase-admin/app';
-import { getAuth, type Auth, type DecodedIdToken, type UserRecord } from 'firebase-admin/auth';
-import { createLogger } from '@utils/logger';
+// src/services/firebase.ts
+import { auth as firebaseAuth } from '../config/firebase'; // ✅ use relative path
+import { createLogger } from '../utils/logger';
+import { type DecodedIdToken, type UserRecord } from 'firebase-admin/auth';
 
-const logger = createLogger('firebase');
+const logger = createLogger('firebase-service');
 
-class FirebaseService {
-  private static instance: FirebaseService;
-  private app: App;
-  private auth: Auth;
-
-  private constructor() {
-    try {
-      // Initialize Firebase Admin
-      this.app = initializeApp({
-        credential: cert({
-          projectId: process.env.FIREBASE_PROJECT_ID,
-          clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-          privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n')
-        })
-      });
-
-      this.auth = getAuth(this.app);
-      logger.info('Firebase Admin initialized successfully');
-    } catch (error) {
-      logger.error('Error initializing Firebase Admin:', error);
-      throw error;
-    }
-  }
-
-  public static getInstance(): FirebaseService {
-    if (!FirebaseService.instance) {
-      FirebaseService.instance = new FirebaseService();
-    }
-    return FirebaseService.instance;
-  }
-
+export class FirebaseService {
   /**
    * Verify Firebase ID token
    */
   public async verifyIdToken(token: string): Promise<DecodedIdToken> {
     try {
-      const decodedToken = await this.auth.verifyIdToken(token);
-      return decodedToken;
+      return await firebaseAuth.verifyIdToken(token);
     } catch (error) {
       logger.error('Error verifying Firebase token:', error);
       throw error;
@@ -54,38 +23,24 @@ class FirebaseService {
    */
   public async getUser(uid: string): Promise<UserRecord> {
     try {
-      const userRecord = await this.auth.getUser(uid);
-      return userRecord;
+      return await firebaseAuth.getUser(uid);
     } catch (error) {
       logger.error('Error getting Firebase user:', error);
       throw error;
     }
   }
-  
+
   /**
    * Create custom token
    */
   public async createCustomToken(uid: string, claims?: object): Promise<string> {
     try {
-      const token = await this.auth.createCustomToken(uid, claims);
-      return token;
+      return await firebaseAuth.createCustomToken(uid, claims);
     } catch (error) {
       logger.error('Error creating custom token:', error);
       throw error;
     }
-  }  
-
-  /**
-   * Get auth instance
-   */
-  public getAuth(): Auth {
-    return this.auth;
   }
 }
 
-// Export singleton instance
-export const firebase = FirebaseService.getInstance();
-export const auth = firebase.getAuth();
-
-// Export types
-export type { Auth };
+export const firebaseService = new FirebaseService();

@@ -1,7 +1,6 @@
-// src/services/auth.service.ts
 import { UnauthorizedError } from '../../utils/errors';
 import { User } from '../../types';
-import { firebase } from '../firebase';
+import { firebaseService } from '../firebase'; // ✅ use this
 import { LoginCredentials, AuthResponse } from '../../types';
 import { db } from '@config/database';
 
@@ -11,7 +10,7 @@ export class AuthService {
   // Verifies Firebase ID token and returns user info
   async authenticateByToken(idToken: string): Promise<AuthResponse> {
     try {
-      const decodedToken = await firebase.verifyIdToken(idToken);
+      const decodedToken = await firebaseService.verifyIdToken(idToken); // ✅ fixed
 
       if (!this.allowedEmails.includes(decodedToken.email || '')) {
         throw new UnauthorizedError('Access denied');
@@ -29,7 +28,7 @@ export class AuthService {
 
   // Admin-only method to get user info from Firebase Auth (not usually used in login flow)
   async getFirebaseUser(uid: string) {
-    return await firebase.getUser(uid);
+    return await firebaseService.getUser(uid); // ✅ fixed
   }
 
   // Helper: fetch user info from DB

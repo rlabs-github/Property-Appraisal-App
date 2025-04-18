@@ -1,23 +1,32 @@
 // src/config/firebase.ts
-import * as admin from 'firebase-admin';
-import dotenv from 'dotenv';
-dotenv.config(); // ✅ Load env vars here FIRST
+import { initializeApp, cert } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
+import * as fs from 'fs';
+import * as path from 'path';
 
-// ✅ Add this BEFORE initializeApp
-console.log('[FIREBASE INIT DEBUG]', {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-  privateKeySet: !!process.env.FIREBASE_PRIVATE_KEY
+const rawJson = fs.readFileSync(path.resolve(__dirname, '../../credentials/firebase-service-account.json'), 'utf8');
+const serviceAccount = JSON.parse(rawJson);
+
+const app = initializeApp({
+  credential: cert(serviceAccount),
 });
 
-if (!admin.apps.length) {
-  admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
-  });
+const auth = getAuth(app);
+
+export { app as firebase, auth }; // ✅ Export firebase for services that use verifyIdToken/getUser
+
+// At the bottom of config/firebase.ts
+if (require.main === module) {
+  (async () => {
+    try {
+      const user = await auth.getUserByEmail('test@example.com');
+      console.log('[✅ TEST PASSED] Firebase initialized and user lookup ran');
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.log('[⚠️ TEST WARNING] Firebase initialized but user lookup failed:', msg);
+    }
+  })();
 }
 
-export const auth = admin.auth();
+
+

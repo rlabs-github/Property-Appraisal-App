@@ -15,6 +15,9 @@ out/
 .env.local
 .env.development
 .env.production
+credentials/firebase-service-account.json
+format-key.js
+
 
 # Ignore IDE files
 .vscode/

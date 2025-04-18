@@ -1,6 +1,6 @@
 // backend/src/middleware/auth.ts
 import { Request, Response, NextFunction } from 'express';
-import { firebase } from '../services/firebase'; // updated to use firebase singleton
+import { firebaseService } from '../services/firebase'; // updated to use firebaseService
 
 export const verifyToken = async (
   req: Request,
@@ -19,7 +19,7 @@ export const verifyToken = async (
   const token = authHeader.split(' ')[1];
 
   try {
-    const decoded = await firebase.verifyIdToken(token);
+    const decoded = await firebaseService.verifyIdToken(token);
     (req as any).user = decoded;
     next();
   } catch (error) {
