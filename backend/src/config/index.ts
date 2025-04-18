@@ -31,7 +31,7 @@ const config: Config = {
     port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
     database: process.env.POSTGRES_DB || 'appraisal_db',
     user: process.env.POSTGRES_USER || 'postgres',
-    password: process.env.POSTGRES_PASSWORD || 'postgres',
+    password: String(process.env.POSTGRES_PASSWORD || 'postgres'),
     // Pool Configuration
     max: 20,
     idleTimeoutMillis: 30000,
