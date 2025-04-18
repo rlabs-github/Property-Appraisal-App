@@ -6,8 +6,9 @@ export class CalculationService {
           const sanitizedFormula = formula.replace(/\{(\w+)\}/g, (_, key) => context[key] || 0);
           // eslint-disable-next-line no-eval
           return eval(sanitizedFormula);
-      } catch (error) {
-          throw new Error(`Formula evaluation error: ${error.message}`);
+      } catch (error: unknown) {
+         const message = (error as Error).message;
+          throw new Error(`Formula evaluation error: ${message}`);
       }
   }
 
