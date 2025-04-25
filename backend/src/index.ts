@@ -4,9 +4,9 @@ import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { apiRoutes } from './routes/api.routes';
-import config from '../src/config';
-import { createLogger } from '../src/utils/logger';
-import { db, shutdown } from '../src/config/database'; // ✅ Consolidated import
+import config from './config';
+import { createLogger } from './utils/logger';
+import { db, shutdown } from './config/database'; // ✅ Consolidated import
 
 
 
