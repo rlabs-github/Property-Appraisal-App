@@ -1,19 +1,16 @@
-// src/index.ts
 import path from 'path';
 import dotenv from 'dotenv';
 import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { apiRoutes } from './routes/api.routes';
-import config from './config';
-import { createLogger } from './utils/logger';
-import { db, shutdown } from './config/database'; // ✅ Consolidated import
-
-
+import config from '../src/config';
+import { createLogger } from '../src/utils/logger';
+import { db, shutdown } from '../src/config/database';
 
 // Initialize logger
 const logger = createLogger('Server');
 
-// Load environment variables from .env file
+// Load environment variables
 const result = dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
 if (result.error) {
@@ -21,10 +18,12 @@ if (result.error) {
   process.exit(1);
 }
 
+console.log('Loaded PORT:', process.env.PORT);
+
 // Create Express app
 const app = express();
 
-// ✅ REPLACE with this
+// Database connection
 db.connectDatabase()
   .then(() => logger.info('Database connected successfully', {
     host: config.db.host,
@@ -40,7 +39,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Request logging middleware
+// Request logging
 app.use((req: Request, _res: Response, next: NextFunction) => {
   logger.debug(`Incoming request`, {
     method: req.method,
@@ -50,11 +49,11 @@ app.use((req: Request, _res: Response, next: NextFunction) => {
   next();
 });
 
-// Health check route
+// Health Check
 app.get('/health', async (_req: Request, res: Response) => {
   try {
-    await db.query('SELECT 1'); // Test query method
-    res.json({ 
+    await db.query('SELECT 1');
+    res.json({
       status: 'healthy',
       timestamp: new Date().toISOString(),
       environment: config.nodeEnv,
@@ -74,10 +73,10 @@ app.get('/health', async (_req: Request, res: Response) => {
   }
 });
 
-// Mount API routes
-app.use('/api', apiRoutes); // ✅ This enables /api/auth/*
+// Mount API Routes
+app.use('/api', apiRoutes);
 
-// Global error handling middleware
+// Global Error Handler
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   logger.error('Unhandled error:', { error: err });
   res.status(500).json({
@@ -86,7 +85,7 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   });
 });
 
-// Handle 404 routes
+// 404 Handler
 app.use((_req: Request, res: Response) => {
   res.status(404).json({ error: 'Not Found' });
 });
@@ -99,10 +98,10 @@ const server = app.listen(config.port, () => {
   });
 });
 
-// Graceful shutdown handling
+// Graceful Shutdown
 const gracefulShutdown = async (signal: string): Promise<void> => {
   logger.info('Starting graceful shutdown...', { signal });
-  
+
   server.close(() => {
     logger.info('Express server closed');
   });
@@ -115,20 +114,15 @@ const gracefulShutdown = async (signal: string): Promise<void> => {
   } catch (err) {
     logger.error('Error during shutdown:', { error: err });
     process.exit(1);
-  }  
+  }
 };
 
-// Handle shutdown signals
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-
-// Handle uncaught exceptions
 process.on('uncaughtException', (err: Error) => {
   logger.error('Uncaught Exception:', { error: err });
   gracefulShutdown('Uncaught Exception');
 });
-
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (reason: unknown, promise: Promise<unknown>) => {
   logger.error('Unhandled Rejection:', { reason, promise });
   gracefulShutdown('Unhandled Rejection');
