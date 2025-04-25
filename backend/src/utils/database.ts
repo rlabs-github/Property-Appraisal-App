@@ -1,6 +1,6 @@
 import { Pool, QueryResult, PoolClient, QueryResultRow } from 'pg';
-import { AppError } from '@utils/errors';
-import { logger } from '@utils/logger';
+import { AppError } from '../utils/errors';
+import { logger } from '../utils/logger';
 
 // Define missing types
 export interface QueryOptions {

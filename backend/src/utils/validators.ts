@@ -1,5 +1,5 @@
 // src/utils/validators.ts
-import { AppError } from '@/utils/errors';
+import { AppError } from '../../src/utils/errors';
 
 export const validateRequired = (value: any, fieldName: string): void => {
     if (value === undefined || value === null || value === '') {

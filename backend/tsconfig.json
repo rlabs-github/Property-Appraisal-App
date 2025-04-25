@@ -18,16 +18,6 @@
       "skipLibCheck": true,
       "forceConsistentCasingInFileNames": true,
       "baseUrl": ".",
-      "paths": {
-        "@/*": ["src/*"],
-        "@config/*": ["src/config/*"],
-        "@controllers/*": ["src/controllers/*"],
-        "@models/*": ["src/models/*"],
-        "@routes/*": ["src/routes/*"],
-        "@services/*": ["src/services/*"],
-        "@utils/*": ["src/utils/*"],
-        "@middleware/*": ["src/middleware/*"]
-      },
       "resolveJsonModule": true,
       "declaration": true,
       "sourceMap": true,

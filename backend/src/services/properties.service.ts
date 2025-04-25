@@ -1,6 +1,5 @@
 // backend/src/services/properties.service.ts
-// backend/src/services/properties.service.ts 
-import { db } from '@config/database';
+import { db } from '../config/database';
 import { Property, PropertyInput, PropertyUpdate } from '../types/property';
 
 export class PropertiesService {

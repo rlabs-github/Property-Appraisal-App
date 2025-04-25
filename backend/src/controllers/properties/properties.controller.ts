@@ -1,6 +1,6 @@
 // backend/src/controllers/properties.controller.ts
 import { Request, Response } from 'express';
-import { PropertiesService } from '@services/properties.service';
+import { PropertiesService } from '../../services/properties.service';
 
 export class PropertiesController {
   private service = new PropertiesService();

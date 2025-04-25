@@ -1,6 +1,6 @@
 // src/controllers/forms/form.controller.ts (New file)
 import { Request, Response, NextFunction } from 'express';
-import { FormBuilderService } from '@services/forms/builder.service';
+import { FormBuilderService } from '../../services/forms/builder.service';
 
 declare module 'express-serve-static-core' {
   interface Request {

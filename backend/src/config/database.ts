@@ -1,6 +1,6 @@
 // backend/src/config/database.ts
 import { Pool } from 'pg';
-import { createLogger } from '@utils/logger';
+import { createLogger } from '../utils/logger';
 
 const logger = createLogger('database');
 

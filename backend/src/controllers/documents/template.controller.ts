@@ -1,6 +1,6 @@
 // src/controllers/documents/template.controller.ts
 import { Request, Response, NextFunction } from 'express';
-import { TemplateService } from '@/services/documents/template.service';
+import { TemplateService } from '../../services/documents/template.service';
 
 export class TemplateController {
   private templateService: TemplateService;

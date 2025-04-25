@@ -1,6 +1,6 @@
 // src/controllers/auth/auth.controller.ts
 import { Request, Response, NextFunction } from 'express';
-import { AuthService } from '@services/auth/auth.service';
+import { AuthService } from '../../services/auth/auth.service';
 
 export class AuthController {
   private authService: AuthService;

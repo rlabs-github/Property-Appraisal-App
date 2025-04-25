@@ -1,5 +1,5 @@
 // services/forms/builder.service.ts
-import db from '@config/database';
+import db from '../../config/database';
 
 export class FormBuilderService {
     async createForm(formData: any) {

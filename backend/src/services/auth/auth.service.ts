@@ -2,7 +2,7 @@ import { UnauthorizedError } from '../../utils/errors';
 import { User } from '../../types';
 import { firebaseService } from '../firebase'; // ✅ use this
 import { LoginCredentials, AuthResponse } from '../../types';
-import { db } from '@config/database';
+import { db } from '../../config/database';
 
 export class AuthService {
   private allowedEmails = ['client@example.com', 'admin@example.com'];

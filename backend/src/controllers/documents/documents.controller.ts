@@ -1,6 +1,6 @@
 // src/controllers/documents/document.controller.ts
 import { Request, Response, NextFunction } from 'express';
-import { DocumentsService } from '@services/documents/documents.service';
+import { DocumentsService } from '../../services/documents/documents.service';
 
 // Extend Express Request to include `tenantId`
 declare module 'express-serve-static-core' {
