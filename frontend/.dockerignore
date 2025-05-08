@@ -1,0 +1,10 @@
+node_modules
+.env
+dist
+coverage
+*.log
+*.test.ts
+*.spec.ts
+.vscode
+Dockerfile*
+.dockerignore
