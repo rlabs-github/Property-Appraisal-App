@@ -12,7 +12,7 @@ COPY package*.json ./
 RUN npm ci
 
 # Copy application source code
-COPY . .
+COPY frontend/ .
 
 # Disable checks for build
 ENV NEXT_DISABLE_ESLINT=1
