@@ -4,8 +4,8 @@ import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import { apiRoutes } from './routes/api.routes';
 import config from './config';
-import { createLogger } from '../src/utils/logger';
-import { db, shutdown } from '../src/config/database';
+import { createLogger } from './utils/logger';
+import { db, shutdown } from './config/database';
 
 // Initialize logger
 const logger = createLogger('Server');
