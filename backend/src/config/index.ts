@@ -2,6 +2,8 @@
 import path from 'path';
 import dotenv from 'dotenv';
 
+const envPath = process.env.ENV_PATH || path.resolve(__dirname, '../../.env');
+dotenv.config({ path: envPath });
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import { PoolConfig } from 'pg';
@@ -65,7 +67,7 @@ if (config.nodeEnv === 'production') {
     'JWT_SECRET'
   ];
 
-  const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]);
+  const missingEnvVars = requiredEnvVars.filter(envVar => !process.env[envVar]?.trim());
 
   if (missingEnvVars.length > 0) {
     throw new Error(
