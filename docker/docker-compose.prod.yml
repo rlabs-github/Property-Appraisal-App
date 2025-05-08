@@ -22,7 +22,7 @@ services:
       - "4000:4000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://user:password@db:5432/property_appraisal
+      - DATABASE_URL=postgresql://user:password@db:5432/appraisal_db
     depends_on:
       db:
         condition: service_healthy
@@ -33,6 +33,7 @@ services:
       dockerfile: ../docker/database/Dockerfile.prod
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
+      - ../docker/database/init:/docker-entrypoint-initdb.d   # ✅ Mounts your init scripts
     environment:
       - NODE_ENV=production
       - POSTGRES_USER=postgres
