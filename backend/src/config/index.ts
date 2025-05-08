@@ -40,6 +40,7 @@ const config: Config = {
     user: process.env.POSTGRES_USER || 'postgres',
     password: String(process.env.POSTGRES_PASSWORD || 'postgres'),
     // Pool Configuration
+    ssl: false, // ✅ Add this line
     max: 20,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 2000,
