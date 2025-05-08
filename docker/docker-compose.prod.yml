@@ -4,20 +4,20 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ../frontend
-      dockerfile: ../docker/frontend/Dockerfile.prod
+      context: ..                              # ✅ Root context so it can access tsconfig.json
+      dockerfile: docker/frontend/Dockerfile.prod
     ports:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://api.yourdomain.com
+      - NEXT_PUBLIC_API_URL=http://localhost:4000  # ✅ Recommend using actual internal/external API URL
     depends_on:
       - backend
 
   backend:
     build:
-      context: ../backend
-      dockerfile: ../docker/backend/Dockerfile.prod
+      context: ..                              # ✅ Root context to copy root-level tsconfig.json
+      dockerfile: docker/backend/Dockerfile.prod
     ports:
       - "4000:4000"
     environment:
@@ -28,7 +28,7 @@ services:
 
   db:
     build:
-      context: ../database   # Ensure this points to `database/`
+      context: ../database                     # ✅ Points to actual database/ folder
       dockerfile: ../docker/database/Dockerfile.prod
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
