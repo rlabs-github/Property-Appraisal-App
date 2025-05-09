@@ -20,6 +20,9 @@ RUN npm ci
 # ✅ Now bring in the rest of the backend code
 COPY ./backend ./
 
+# ✅ Copy root tsconfig.base.json so the "extends" in backend/tsconfig.json works
+COPY tsconfig.base.json ./tsconfig.base.json
+
 # ✅ Build using tsconfig.json in this director
 RUN npm run build
 
