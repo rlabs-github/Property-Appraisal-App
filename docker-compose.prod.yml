@@ -4,8 +4,8 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./frontend
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: frontend/Dockerfile.prod
     ports:
       - "3000:3000"
     environment:
@@ -34,8 +34,8 @@ services:
 
   db:
     build:
-      context: ./database
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: database/Dockerfile.prod
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
