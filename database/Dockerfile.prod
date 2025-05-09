@@ -1,6 +1,8 @@
 # Database Production Dockerfile
 FROM postgres:14-alpine
 
+RUN mkdir -p /etc/postgresql
+
 # Copy custom PostgreSQL config from root-relative path
 COPY database/config/postgresql.conf /etc/postgresql/postgresql.conf
 
