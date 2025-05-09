@@ -12,6 +12,7 @@ RUN npm install -g npm@latest
 
 # Copy project files
 COPY ./backend/package*.json ./backend/tsconfig.json ./backend/
+COPY ./backend/tsconfig.json ./
 WORKDIR /app/backend
 RUN npm ci
 COPY ./backend ./

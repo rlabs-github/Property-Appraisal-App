@@ -16,12 +16,13 @@ services:
 
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile.prod
+      context: .
+      dockerfile: backend/Dockerfile.prod
     ports:
       - "4000:4000"
     environment:
       - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/appraisal_db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=appraisal_db
