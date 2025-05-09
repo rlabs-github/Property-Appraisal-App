@@ -1,24 +1,22 @@
-# Ignore node modules
+# Node & Build Artifacts
 node_modules/
-
-# Ignore build files
+.next/
+out/
 dist/
 build/
 coverage/
-.next/
-out/
 *.log
 *.tsbuildinfo
 
-# Ignore environment files
+# Env Files
 .env
-.env.local
-.env.development
-.env.production
+.env.*
+!.env.example
 
-# Ignore IDE files
+# IDEs and OS
 .vscode/
 .idea/
 .DS_Store
 *.swp
+
 

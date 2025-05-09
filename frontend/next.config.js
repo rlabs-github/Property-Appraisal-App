@@ -9,10 +9,6 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
-
-  // Enable standalone output for optimized Docker deployment
-  output: 'standalone',
-
   // Webpack configuration for alias support
   webpack: (config) => {
     config.resolve.alias = {

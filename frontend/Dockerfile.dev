@@ -1,0 +1,18 @@
+# Next.js Development Dockerfile
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies first
+COPY frontend/package*.json ./
+RUN npm install
+
+# Copy the rest of the frontend source code
+COPY frontend/ ./
+
+# Expose the port used by Next.js dev server
+EXPOSE 3000
+
+# Start the Next.js development server
+CMD ["npm", "run", "dev"]
