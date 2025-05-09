@@ -2,14 +2,20 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
-COPY frontend/package*.json ./
+# Copy only package files first for caching
+COPY package*.json ./
 RUN npm ci
 
-COPY frontend/ ./
-COPY tsconfig.json ./
+# Copy rest of the frontend source code
+COPY . .
+
+# If your tsconfig is shared from the root (optional):
+# COPY ../tsconfig.base.json ./tsconfig.base.json
+
+# Build the Next.js app
 RUN npm run build
 
-# Stage 2: Run the Next.js app
+# Stage 2: Run the app
 FROM node:20-alpine AS runner
 WORKDIR /app
 
@@ -21,5 +27,7 @@ COPY --from=builder /app/next.config.js ./
 
 ENV NODE_ENV=production
 EXPOSE 3000
+
 CMD ["npm", "start"]
+
 
