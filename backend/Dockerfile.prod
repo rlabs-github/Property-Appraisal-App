@@ -1,5 +1,4 @@
 # Backend Production Dockerfile (docker/backend/Dockerfile.prod)
-# Backend Production Dockerfile
 
 # Stage 1: Build the app
 FROM node:20-alpine AS builder
@@ -10,20 +9,23 @@ WORKDIR /app
 # Install latest npm
 RUN npm install -g npm@latest
 
-# ✅ Copy project files needed for build in /app/backend
+# ✅ Copy root-level base tsconfig for extends to work
+COPY tsconfig.base.json ./tsconfig.base.json
+
+# ✅ Copy backend package and tsconfig
 COPY backend/package*.json ./backend/
 COPY backend/tsconfig.json ./backend/
 
+# Move into backend directory
 WORKDIR /app/backend
+
+# Install dependencies
 RUN npm ci
 
-# ✅ Now bring in the rest of the backend code
-COPY ./backend ./
+# ✅ Copy the rest of backend source code
+COPY ./backend ./ 
 
-# ✅ Copy root tsconfig.base.json so the "extends" in backend/tsconfig.json works
-COPY tsconfig.base.json ./tsconfig.base.json
-
-# ✅ Build using tsconfig.json in this director
+# Build project
 RUN npm run build
 
 # Stage 2: Run the app
@@ -31,7 +33,6 @@ FROM node:20-alpine AS runner
 
 WORKDIR /app
 
-# Only copy the compiled build and node_modules
 COPY --from=builder /app/backend/dist ./dist
 COPY --from=builder /app/backend/node_modules ./node_modules
 COPY --from=builder /app/backend/package*.json ./
@@ -40,3 +41,4 @@ ENV NODE_ENV=production
 EXPOSE 4000
 
 CMD ["node", "dist/index.js"]
+
