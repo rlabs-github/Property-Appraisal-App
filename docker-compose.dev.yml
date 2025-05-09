@@ -4,8 +4,8 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: .
-      dockerfile: docker/frontend/Dockerfile.dev
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     ports:
       - "3000:3000"
     volumes:
@@ -19,8 +19,8 @@ services:
 
   backend:
     build:
-      context: .
-      dockerfile: docker/backend/Dockerfile.dev
+      context: ./backend
+      dockerfile: Dockerfile.dev
     ports:
       - "4000:4000"
     volumes:
@@ -34,13 +34,13 @@ services:
 
   db:
     build:
-      context: .
-      dockerfile: docker/database/Dockerfile.dev
+      context: ./database
+      dockerfile: Dockerfile.dev
     ports:
       - "5432:5432"
     volumes:
       - postgres_dev_data:/var/lib/postgresql/data
-      - ./database/migrations:/docker-entrypoint-initdb.d
+      - ./database/init:/docker-entrypoint-initdb.d
     environment:
       - POSTGRES_USER=user
       - POSTGRES_PASSWORD=password

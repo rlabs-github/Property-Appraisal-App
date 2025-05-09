@@ -1,11 +1,23 @@
 # .gitignore
+# Node.js
 node_modules/
 dist/
 build/
 coverage/
-.env
-.env.test
-.env.*
-!.env.example
+
+# Logs
 *.log
+
+# Environment files (keep only safe examples)
+.env
+.env.*
+!.env.prod.example
+!.env.dev        # Optional: include this if you want to commit dev configs
+backend/.env
+frontend/.env.local
+
+# macOS
 .DS_Store
+
+# Docker
+**/.next/

@@ -1,0 +1,12 @@
+# Database Development & Production Dockerfile (docker/database/Dockerfile.dev/prod)
+FROM postgres:14-alpine
+
+# Copy PostgreSQL config
+COPY ./config/postgresql.conf /etc/postgresql/postgresql.conf
+
+# Development-specific initialization
+COPY ./migrations/ /docker-entrypoint-initdb.d/
+COPY ./seeds/ /docker-entrypoint-initdb.d/seeds/
+
+# Start PostgreSQL with custom config
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]

@@ -1,0 +1,14 @@
+# Use the official Node.js image as the base image
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copy only necessary files to install deps first
+COPY ./backend/package*.json ./
+RUN npm install
+
+# Copy the rest of the backend code
+COPY ./backend ./
+
+EXPOSE 4000
+CMD ["npm", "run", "start:dev"]

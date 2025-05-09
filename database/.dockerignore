@@ -1,5 +1,11 @@
+.git
+.env*
 *.log
-temp/
+*.sql
+.vscode
+.idea
+.DS_Store
+*.swp
 *.md
-.dockerignore
-Dockerfile*
+Dockerfile.dev
+Dockerfile.prod

@@ -1,0 +1,33 @@
+# Backend Production Dockerfile (docker/backend/Dockerfile.prod)
+# Backend Production Dockerfile
+
+# Stage 1: Build the app
+FROM node:20-alpine AS builder
+
+# Set working directory
+WORKDIR /app
+
+# Install latest npm
+RUN npm install -g npm@latest
+
+# Copy project files
+COPY ./backend/package*.json ./backend/tsconfig.json ./backend/
+WORKDIR /app/backend
+RUN npm ci
+COPY ./backend ./
+RUN npm run build
+
+# Stage 2: Run the app
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+# Only copy the compiled build and node_modules
+COPY --from=builder /app/backend/dist ./dist
+COPY --from=builder /app/backend/node_modules ./node_modules
+COPY --from=builder /app/backend/package*.json ./
+
+ENV NODE_ENV=production
+EXPOSE 4000
+
+CMD ["node", "dist/index.js"]
