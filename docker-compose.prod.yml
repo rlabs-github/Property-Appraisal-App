@@ -39,7 +39,8 @@ services:
     volumes:
       - postgres_prod_data:/var/lib/postgresql/data
       - ./database/init:/docker-entrypoint-initdb.d
-      - ./database/certs:/etc/postgresql
+      - /database/certs/server.key:/etc/postgresql/server.key
+      - ./database/certs/server.crt:/etc/postgresql/server.crt
     environment:
       - NODE_ENV=production
       - POSTGRES_USER=postgres
