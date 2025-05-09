@@ -16,3 +16,10 @@ COPY ./seeds/ /docker-entrypoint-initdb.d/seeds/
 
 # Start PostgreSQL with the correct configuration
 CMD ["postgres", "-D", "/var/lib/postgresql/data", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+
+# Copy SSL certificates into container
+COPY ./database/certs/server.crt /etc/postgresql/server.crt
+COPY ./database/certs/server.key /etc/postgresql/server.key
+
+# Set proper ownership and permissions
+RUN chown postgres:postgres /etc/postgresql/server.* && chmod 600 /etc/postgresql/server.*
