@@ -13,5 +13,8 @@ COPY database/certs/ /etc/postgresql/
 COPY database/migrations/ /docker-entrypoint-initdb.d/
 COPY database/seeds/ /docker-entrypoint-initdb.d/seeds/
 
+# set permissions on server.key to 0600 (read/write only for the file owner)
+RUN chmod 600 /etc/postgresql/server.key
+
 # Start PostgreSQL with the custom config
 CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
