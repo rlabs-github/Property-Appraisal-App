@@ -11,7 +11,8 @@ WORKDIR /app
 RUN npm install -g npm@latest
 
 # ✅ Copy project files needed for build in /app/backend
-COPY backend/package*.json backend/tsconfig.json ./backend/
+COPY backend/package*.json ./backend/
+COPY backend/tsconfig.json ./backend/
 
 WORKDIR /app/backend
 RUN npm ci
