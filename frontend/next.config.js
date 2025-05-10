@@ -9,6 +9,17 @@ const nextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
   },
+
+  // ✅ Add API rewrite for Docker-based backend access
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://backend:4000/api/:path*', // Docker service name
+      },
+    ];
+  },
+
   // Webpack configuration for alias support
   webpack: (config) => {
     config.resolve.alias = {

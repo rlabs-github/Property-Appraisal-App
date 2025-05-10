@@ -2,17 +2,16 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 
+# ✅ Copy shared tsconfig.base.json so "extends: ../tsconfig.base.json" works
+COPY tsconfig.base.json ./tsconfig.base.json
+
 # Copy only package files first for caching
 COPY frontend/package*.json ./frontend/
 WORKDIR /app/frontend
 RUN npm ci
 
 # Copy the rest of the app
-COPY frontend/ ./      
-# Copy contents of ./frontend into /app/frontend
-
-# Optionally, if you have tsconfig.base.json in root and use it in frontend
-# COPY tsconfig.base.json ./tsconfig.base.json
+COPY frontend/ ./
 
 RUN npm run build
 
@@ -20,16 +19,13 @@ RUN npm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
-COPY --from=builder /app/frontend/package*.json ./
 COPY --from=builder /app/frontend/.next ./.next
 COPY --from=builder /app/frontend/public ./public
 COPY --from=builder /app/frontend/node_modules ./node_modules
+COPY --from=builder /app/frontend/package.json ./
 COPY --from=builder /app/frontend/next.config.js ./
 
 ENV NODE_ENV=production
 EXPOSE 3000
 
 CMD ["npm", "start"]
-
-
-

@@ -1,12 +1,9 @@
 // src/app.ts
-import express, { Application } from "express";
-import dotenv from "dotenv";
-import cors from "cors";
-import pool from "../src/config/database";
-import connectDatabase from "../src/config/database";
+import '../src/config/load-env'; // ✅ Load environment variables first
 
-// Load environment variables
-dotenv.config();
+import express, { Application } from "express";
+import cors from "cors";
+import connectDatabase from "../src/config/database"; // Don't need to import pool separately
 
 const app: Application = express();
 
@@ -17,8 +14,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get("/", (req, res) => {
-    res.send("Backend is up and running!");
+  res.send("Backend is up and running!");
 });
 
-// ✅ REMOVE `startServer()`, let `server.ts` handle it
 export default app;

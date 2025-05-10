@@ -22,6 +22,8 @@ WORKDIR /app/backend
 # Install dependencies
 RUN npm ci
 
+COPY backend/credentials /app/credentials
+
 # ✅ Copy the rest of backend source code
 COPY ./backend ./ 
 

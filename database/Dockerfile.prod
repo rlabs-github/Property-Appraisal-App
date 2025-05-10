@@ -3,18 +3,19 @@ FROM postgres:14-alpine
 
 RUN mkdir -p /etc/postgresql
 
-# Copy custom PostgreSQL config from root-relative path
+# Copy custom PostgreSQL config
 COPY database/config/postgresql.conf /etc/postgresql/postgresql.conf
 
 # Copy SSL certs
 COPY database/certs/ /etc/postgresql/
 
-# Copy initialization scripts
+# Copy DB init scripts
 COPY database/migrations/ /docker-entrypoint-initdb.d/
 COPY database/seeds/ /docker-entrypoint-initdb.d/seeds/
 
-# set permissions on server.key to 0600 (read/write only for the file owner)
-RUN chmod 600 /etc/postgresql/server.key
+# Copy entrypoint script that fixes SSL key permissions
+COPY database/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Start PostgreSQL with the custom config
-CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
+# Override default entrypoint to run our script
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

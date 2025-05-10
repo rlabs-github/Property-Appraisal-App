@@ -1,5 +1,7 @@
-import dotenv from 'dotenv';
-dotenv.config();
+if (process.env.NODE_ENV !== 'production') {
+  const dotenv = require('dotenv');
+  dotenv.config();
+}
 
 console.log('[ENV CHECK]', {
   FIREBASE_PROJECT_ID: process.env.FIREBASE_PROJECT_ID,

@@ -1,6 +1,4 @@
 # docker-compose.prod.yml
-version: '3.8'
-
 services:
   frontend:
     build:
@@ -10,7 +8,6 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_PUBLIC_API_URL=http://backend:4000
     depends_on:
       - backend
 
@@ -23,11 +20,15 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://postgres:postgres@db:5432/appraisal_db
+      - JWT_SECRET=your_super_secret_value_here
+      - FIREBASE_TYPE=service_account
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=appraisal_db
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
+    volumes:
+      - ./backend/credentials:/app/credentials:ro
     depends_on:
       db:
         condition: service_healthy

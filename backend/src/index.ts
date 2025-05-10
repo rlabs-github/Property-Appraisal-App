@@ -10,12 +10,14 @@ import { db, shutdown } from './config/database';
 // Initialize logger
 const logger = createLogger('Server');
 
-// Load environment variables
-const result = dotenv.config({ path: path.resolve(__dirname, '../.env') });
-
-if (result.error) {
-  logger.error('Error loading .env file:', { error: result.error });
-  process.exit(1);
+/// Load environment variables in development only
+if (process.env.NODE_ENV !== 'production') {
+  const result = dotenv.config({ path: path.resolve(__dirname, '../.env') });
+  if (result.error) {
+    console.warn('[DEV ENV LOAD FAILED]', result.error);
+  } else {
+    console.log('[DEV ENV LOADED]', process.env.PORT);
+  }
 }
 
 console.log('Loaded PORT:', process.env.PORT);

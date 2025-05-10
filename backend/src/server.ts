@@ -1,16 +1,15 @@
 // src/server.ts
-import dotenv from 'dotenv';
-import app from './app';  // ✅ Import the Express app, NOT "./config/server"
-import { createLogger } from '../src/utils/logger';
-import { db } from './config/database'; // Fixed connectDatabase is not callable
-import connectDatabase from '../src/config/database';
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 
-dotenv.config();
+import app from './app'; // Import your Express app
+import { createLogger } from './utils/logger'; // Adjusted to relative path
+import { db } from './config/database'; // Ensure this exports an object with connectDatabase()
 
 const logger = createLogger('server');
 const PORT = process.env.PORT || 3000;
 
-// ✅ Connect to the database before starting the server
 const startServer = async () => {
   try {
     await db.connectDatabase();
@@ -18,7 +17,6 @@ const startServer = async () => {
       logger.info(`Server is running on port ${PORT}`);
     });
 
-    // Graceful Shutdown Handlers
     process.on('unhandledRejection', (err: Error) => {
       logger.error('Unhandled Rejection:', err);
       server.close(() => process.exit(1));
@@ -34,6 +32,6 @@ const startServer = async () => {
   }
 };
 
-startServer(); // ✅ Start the server
+startServer();
 
 export default app;
