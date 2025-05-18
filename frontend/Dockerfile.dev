@@ -1,18 +1,16 @@
-# Next.js Development Dockerfile
 FROM node:20-alpine
 
-# Set working directory
-WORKDIR /app
+# Create app directory
+WORKDIR /app/frontend
 
 # Install dependencies first
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the frontend source code
-COPY frontend/ ./
+# Add this line to fix the TS base config issue
+COPY tsconfig.base.json /app/tsconfig.base.json
 
-# Expose the port used by Next.js dev server
+# Use Next.js dev server with hot reload
 EXPOSE 3000
-
-# Start the Next.js development server
 CMD ["npm", "run", "dev"]
+

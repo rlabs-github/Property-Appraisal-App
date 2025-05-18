@@ -1,14 +1,17 @@
-# Use the official Node.js image as the base image
 FROM node:20-alpine
 
-WORKDIR /app
+WORKDIR /app/backend
 
-# Copy only necessary files to install deps first
-COPY ./backend/package*.json ./
+# Install backend dependencies
+COPY backend/package*.json ./
 RUN npm install
 
-# Copy the rest of the backend code
-COPY ./backend ./
+# ⬅️ ADD THIS LINE to bring in the base config
+COPY tsconfig.base.json /app/tsconfig.base.json
 
-EXPOSE 4000
-CMD ["npm", "run", "start:dev"]
+# Copy TypeScript config and source code
+COPY backend/tsconfig.json ./
+COPY backend/src ./src
+
+# Start the backend
+CMD ["npx", "ts-node", "src/app.ts"]

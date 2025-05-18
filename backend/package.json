@@ -6,6 +6,7 @@
     "dev": "ts-node-dev -r tsconfig-paths/register --respawn src/index.ts",
     "build": "tsc -p tsconfig.json",
     "start": "node dist/index.js",
+    "start:dev": "ts-node src/index.ts",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"
@@ -19,7 +20,7 @@
     "express-rate-limit": "^7.5.0",
     "express-validator": "^7.2.1",
     "firebase": "^11.4.0",
-    "firebase-admin": "^13.2.0",
+    "firebase-admin": "^13.4.0",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.14.0",
     "ts-node": "^10.9.2",

@@ -1,5 +1,5 @@
 // src/app.ts
-import '../src/config/load-env'; // ✅ Load environment variables first
+import '../src/config/environments'; // ✅ Load environment variables first
 
 import express, { Application } from "express";
 import cors from "cors";
