@@ -3,13 +3,7 @@ import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-
-interface Placeholder {
- key: string;
- description: string;
- type?: 'text' | 'number' | 'date' | 'currency';
- required?: boolean;
-}
+import type { Placeholder } from '@/types/template';
 
 interface Template {
  placeholders: Placeholder[];

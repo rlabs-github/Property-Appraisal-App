@@ -3,12 +3,17 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
 
-import app from './app'; // Import your Express app
-import { createLogger } from './utils/logger'; // Adjusted to relative path
-import { db } from './config/database'; // Ensure this exports an object with connectDatabase()
+import app from './app';
+import { createLogger } from './utils/logger';
+import { db } from './config/database';
 
 const logger = createLogger('server');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
+
+// ❌ REMOVE this block
+// app.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
 
 const startServer = async () => {
   try {

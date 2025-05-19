@@ -1,4 +1,10 @@
 // src/types/template.ts
+export interface TemplateSection {
+  id: string;
+  title: string;
+  fields: any[]; // define this more strictly if possible
+}
+
 export interface DocumentTemplate {
     id: string;
     tenantId: string;
@@ -14,6 +20,8 @@ export interface DocumentTemplate {
     updatedBy: string;
     createdAt: string;
     updatedAt: string;
+
+    sections: TemplateSection[];
   }
   
   export type TemplateType = 'appraisal' | 'inspection' | 'analysis' | 'custom';
@@ -24,6 +32,7 @@ export interface DocumentTemplate {
     label: string;
     type: PlaceholderType;
     required: boolean;
+    description?: string;
     defaultValue?: any;
   }
   

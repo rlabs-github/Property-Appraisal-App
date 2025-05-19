@@ -14,4 +14,5 @@ COPY backend/tsconfig.json ./
 COPY backend/src ./src
 
 # Start the backend
-CMD ["npx", "ts-node", "src/app.ts"]
+CMD ["npx", "ts-node", "src/server.ts"]
+

@@ -11,7 +11,7 @@ services:
       - ./frontend:/app/frontend
     environment:
       - NODE_ENV=development
-      - NEXT_PUBLIC_API_URL=http://localhost:4000
+      - NEXT_PUBLIC_API_URL=http://localhost:4100
     depends_on:
       - backend
 
@@ -20,11 +20,13 @@ services:
       context: .
       dockerfile: backend/Dockerfile.dev
     ports:
-      - "4000:4000"
+      - "4100:4000"
     volumes:
       - ./backend:/app/backend
+      - ${APPDATA}/gcloud:/root/.config/gcloud:ro
     environment:
       - NODE_ENV=development
+      - PORT=4000
       - DATABASE_URL=postgresql://user:password@db:5432/appraisal_db
     depends_on:
       - db

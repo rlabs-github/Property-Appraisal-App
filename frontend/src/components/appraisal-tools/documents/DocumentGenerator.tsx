@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { FileDown, Settings } from 'lucide-react';
 import { DataMapper } from './DataMapper';
 import { ExportSettings } from './ExportSettings';
+import { api } from '@/lib/api/api';
+import type { DocumentTemplate } from '@/types/template';
 
 interface GeneratorData {
   templateId: string;
@@ -23,8 +25,8 @@ interface DocumentGeneratorProps {
 }
 
 export const DocumentGenerator: React.FC<DocumentGeneratorProps> = ({ onGenerate }) => {
-  const [templates, setTemplates] = useState([]);
-  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<DocumentTemplate | null>(null);
   const [generatorData, setGeneratorData] = useState<GeneratorData>({
     templateId: '',
     mappings: {},
@@ -41,14 +43,13 @@ export const DocumentGenerator: React.FC<DocumentGeneratorProps> = ({ onGenerate
   }, []);
 
   const fetchTemplates = async () => {
-    try {
-      const response = await fetch('/api/templates');
-      const data = await response.json();
-      setTemplates(data);
-    } catch (error) {
-      // Handle error
-    }
-  };
+  try {
+    const data = await api.get<DocumentTemplate[]>('/templates');
+    setTemplates(data);
+  } catch (error) {
+    console.error('Failed to fetch templates', error);
+  }
+};
 
   const handleGenerate = async () => {
     try {
@@ -58,19 +59,19 @@ export const DocumentGenerator: React.FC<DocumentGeneratorProps> = ({ onGenerate
         body: JSON.stringify(generatorData),
       });
 
-      if (!response.ok) throw new Error('Failed to generate document');
+    if (!response.ok) throw new Error('Failed to generate document');
 
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `generated-document.${generatorData.exportSettings.format}`;
-      a.click();
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      // Handle error
-    }
-  };
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `generated-document.${generatorData.exportSettings.format}`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error('Failed to generate document', error);
+  }
+};
 
   return (
     <div className="space-y-6">

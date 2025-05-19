@@ -1,4 +1,5 @@
 // src/contexts/AuthContext.tsx
+// src/contexts/AuthContext.tsx
 import {
   createContext,
   useContext,
@@ -15,7 +16,9 @@ import {
   User as FirebaseUser,
 } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
-import { firebaseApp } from '@/firebase'; // Import the initialized Firebase app
+import { firebaseApp } from '@/firebase';
+import { api } from '@/lib/api/api'; // ✅ centralized API
+import type { User as AppUser } from '@/types/user'; // optionally move your User type here if external
 
 interface User {
   id: string;
@@ -45,7 +48,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const auth = getAuth(firebaseApp); // Use initialized Firebase app
+  const auth = getAuth(firebaseApp);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -53,22 +56,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       if (firebaseUser) {
         try {
-          // Fetch additional user data from your backend
-          const response = await fetch(`/api/users/me`, {
+          const token = await firebaseUser.getIdToken();
+          const userData = await api.get<User>(`/users/me`, {
             headers: {
-              Authorization: `Bearer ${await firebaseUser.getIdToken()}`,
+              Authorization: `Bearer ${token}`,
             },
           });
 
-          if (response.ok) {
-            const userData = await response.json();
-            setUser({
-              id: userData.id,
-              email: firebaseUser.email,
-              role: userData.role,
-              tenantId: userData.tenantId,
-            });
-          }
+          setUser({
+            id: userData.id,
+            email: firebaseUser.email,
+            role: userData.role,
+            tenantId: userData.tenantId,
+          });
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
@@ -84,23 +84,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const login = async (email: string, password: string) => {
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const response = await fetch(`/api/users/me`, {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+
+      const userData = await api.get<User>(`/users/me`, {
         headers: {
-          Authorization: `Bearer ${await userCredential.user.getIdToken()}`,
+          Authorization: `Bearer ${token}`,
         },
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch user data');
-      }
-
-      const userData = await response.json();
-      return userData;
+      setUser({
+        id: userData.id,
+        email: userCredential.user.email,
+        role: userData.role,
+        tenantId: userData.tenantId,
+      });
     } catch (error) {
       console.error('Login error:', error);
       throw error;
@@ -109,21 +107,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const register = async (email: string, password: string) => {
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const token = await userCredential.user.getIdToken();
+
+      await api.post(`/users`, {
         email,
-        password
-      );
-      await fetch('/api/users', {
-        method: 'POST',
+        role: 'appraiser',
+      }, {
         headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${await userCredential.user.getIdToken()}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          email,
-          role: 'appraiser', // Default role
-        }),
       });
     } catch (error) {
       console.error('Registration error:', error);
@@ -134,6 +127,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
+      setUser(null);
       navigate('/login');
     } catch (error) {
       console.error('Sign out error:', error);

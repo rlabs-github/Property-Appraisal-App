@@ -1,0 +1,24 @@
+# Common exclusions
+.git/
+*.log
+*.swp
+.DS_Store
+.vscode/
+.idea/
+.env
+*.env
+
+# Build and dependency folders
+node_modules/
+dist/
+.next/
+build/
+
+# Certs and credentials (already handled in scoped .dockerignore)
+credentials/
+*.key
+*.crt
+*.pem
+
+# Coverage and test artifacts
+coverage/

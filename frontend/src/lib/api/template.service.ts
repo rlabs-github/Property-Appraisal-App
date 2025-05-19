@@ -1,4 +1,4 @@
-// src/services/template.service.ts
+// src/lib/api/template.service.ts
 import { api } from './api';
 
 interface Template {
@@ -13,28 +13,23 @@ interface Template {
 
 export const templateService = {
   async getAll(): Promise<Template[]> {
-    const templates = await api.get<Template[]>('/templates');
-    return templates; // The response is directly the parsed data, thanks to api.ts generics.
+    return await api.get<Template[]>('/templates');
   },
 
   async getById(id: string): Promise<Template> {
-    const template = await api.get<Template>(`/templates/${id}`);
-    return template; // Again, the generic ensures type safety.
+    return await api.get<Template>(`/templates/${id}`);
   },
 
   async create(data: Omit<Template, 'id' | 'version' | 'lastModified'>): Promise<Template> {
-    const newTemplate = await api.post<Template>('/templates', data);
-    return newTemplate;
+    return await api.post<Template>('/templates', data);
   },
 
   async update(id: string, data: Partial<Template>): Promise<Template> {
-    const updatedTemplate = await api.put<Template>(`/templates/${id}`, data);
-    return updatedTemplate;
+    return await api.put<Template>(`/templates/${id}`, data);
   },
 
   async delete(id: string): Promise<void> {
-    await api.delete(`/templates/${id}`);
-    // No return value for delete as it resolves a void Promise.
+    return await api.delete(`/templates/${id}`);
   },
 
   async generateDocument(templateId: string, data: any): Promise<Blob> {
@@ -50,6 +45,6 @@ export const templateService = {
       throw new Error('Failed to generate document');
     }
 
-    return response.blob(); // Returns a Blob object.
+    return response.blob(); // ✅ Remains custom due to Blob handling
   },
 };

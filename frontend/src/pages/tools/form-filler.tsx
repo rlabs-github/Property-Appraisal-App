@@ -4,9 +4,11 @@ import { useState, useEffect } from 'react';
 import ProtectedPage from '@/components/auth/ProtectedPage';
 import FormFiller from '@/components/appraisal-tools/forms/FormFiller';
 import { useApp } from '@/contexts/AppContext';
+import { api } from '@/lib/api/api';
+import type { DocumentTemplate } from '@/types/template';
 
 const FormFillerPage: NextPage = () => {
-  const [templates, setTemplates] = useState([]);
+  const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
   const { showNotification, setIsLoading } = useApp();
 
   useEffect(() => {
@@ -16,10 +18,10 @@ const FormFillerPage: NextPage = () => {
   const fetchTemplates = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/form-templates');
-      const data = await response.json();
+      const data = await api.get<DocumentTemplate[]>('/form-templates');
       setTemplates(data);
     } catch (error) {
+      console.error('Template fetch error:', error);
       showNotification('error', 'Failed to load templates');
     } finally {
       setIsLoading(false);
@@ -28,18 +30,10 @@ const FormFillerPage: NextPage = () => {
 
   const handleSubmit = async (formData: any) => {
     try {
-      const response = await fetch('/api/form-submissions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (response.ok) {
-        showNotification('success', 'Form submitted successfully');
-      }
+      await api.post('/form-submissions', formData);
+      showNotification('success', 'Form submitted successfully');
     } catch (error) {
+      console.error('Form submission error:', error);
       showNotification('error', 'Failed to submit form');
     }
   };

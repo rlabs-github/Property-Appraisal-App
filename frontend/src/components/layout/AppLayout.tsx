@@ -13,6 +13,7 @@ import {
   BarChart3,
   ShieldCheck,
 } from 'lucide-react';
+import { api } from '@/lib/api/api';
 
 // Types
 interface NavLink {
@@ -61,12 +62,8 @@ const LoadingOverlay: FC = () => (
 const StatusBar: FC = () => {
   const { data: stats, isLoading } = useQuery<AppraisalStats>({
     queryKey: ['appraisalStats'],
-    queryFn: async (): Promise<AppraisalStats> => {
-      const response = await fetch('/api/stats');
-      if (!response.ok) {
-        throw new Error('Failed to fetch stats');
-      }
-      return response.json();
+    queryFn: async () => {
+      return await api.get<AppraisalStats>('/stats');
     },
     refetchInterval: 30000,
     staleTime: 20000,
