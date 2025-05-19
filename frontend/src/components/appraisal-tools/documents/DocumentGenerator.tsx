@@ -53,7 +53,7 @@ export const DocumentGenerator: React.FC<DocumentGeneratorProps> = ({ onGenerate
 
   const handleGenerate = async () => {
     try {
-      const response = await fetch('/api/documents/generate', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/documents/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(generatorData),

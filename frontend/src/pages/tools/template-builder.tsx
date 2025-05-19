@@ -7,22 +7,22 @@ const TemplateBuilderPage: NextPage = () => {
   const { showNotification } = useApp();
 
   const handleSaveTemplate = async (templateData: any) => {
-    try {
-      const response = await fetch('/api/templates', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(templateData),
-      });
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/templates`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(templateData),
+    });
 
-      if (response.ok) {
-        showNotification('success', 'Template saved successfully');
-      }
-    } catch (error) {
-      showNotification('error', 'Failed to save template');
+    if (response.ok) {
+      showNotification('success', 'Template saved successfully');
     }
-  };
+  } catch (error) {
+    showNotification('error', 'Failed to save template');
+  }
+};
 
   return (
     <ProtectedPage>
