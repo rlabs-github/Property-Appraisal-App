@@ -2,7 +2,8 @@
 export interface TemplateSection {
   id: string;
   title: string;
-  fields: any[]; // define this more strictly if possible
+  fields: any[];
+  type: string; // define this more strictly if possible
 }
 
 export interface DocumentTemplate {

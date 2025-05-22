@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -11,31 +11,10 @@ import {
 } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 
-interface Field {
-  id: string;
-  type: 'text' | 'number' | 'select' | 'calculation' | 'currency';
-  label: string;
-  required: boolean;
-  placeholder: string;
-  options?: string[];
-  calculationFormula?: string;
-}
-
-interface Section {
-  id: string;
-  type: 'standard' | 'calculation';
-  title: string;
-  fields: Field[];
-}
-
-interface Template {
-  id: string;
-  name: string;
-  sections: Section[];
-}
+import type { FormTemplate, FormField, FormSection } from '@/types/form';
 
 interface FormFillerProps {
-  templates: Template[];
+  templates: FormTemplate[];
   onSubmit?: (formData: {
     templateId: string;
     data: Record<string, any>;
@@ -47,34 +26,32 @@ const FormFiller: React.FC<FormFillerProps> = ({ templates, onSubmit }) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const currentTemplate = templates.find(t => t.id === selectedTemplate);
+  const currentTemplate = templates.find((t) => t.id === selectedTemplate);
 
   const handleFieldChange = (fieldId: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [fieldId]: value
+      [fieldId]: value,
     }));
 
-    // Recalculate any dependent fields
     if (currentTemplate) {
       const updatedData = { ...formData, [fieldId]: value };
       const calculatedValues = calculateDependentFields(currentTemplate.sections, updatedData);
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        ...calculatedValues
+        ...calculatedValues,
       }));
     }
   };
 
-  const calculateDependentFields = (sections: Section[], currentData: Record<string, any>) => {
+  const calculateDependentFields = (sections: FormSection[], currentData: Record<string, any>) => {
     const calculations: Record<string, any> = {};
-    
-    sections.forEach(section => {
-      section.fields.forEach(field => {
-        if (field.type === 'calculation' && field.calculationFormula) {
+
+    sections.forEach((section) => {
+      section.fields.forEach((field) => {
+        if (field.type === 'calculation' && field.formula) {
           try {
-            // Simple calculation implementation - replace with more robust solution
-            let formula = field.calculationFormula;
+            let formula = field.formula;
             Object.entries(currentData).forEach(([key, value]) => {
               formula = formula.replace(`{${key}}`, value);
             });
@@ -97,17 +74,16 @@ const FormFiller: React.FC<FormFillerProps> = ({ templates, onSubmit }) => {
       setIsSubmitting(true);
       await onSubmit({
         templateId: selectedTemplate,
-        data: formData
+        data: formData,
       });
     } catch (error) {
       console.error('Error submitting form:', error);
-      // Handle error appropriately
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const renderField = (field: Field) => {
+  const renderField = (field: FormField) => {
     switch (field.type) {
       case 'text':
         return (
@@ -142,8 +118,8 @@ const FormFiller: React.FC<FormFillerProps> = ({ templates, onSubmit }) => {
             </SelectTrigger>
             <SelectContent>
               {field.options?.map((option) => (
-                <SelectItem key={option} value={option}>
-                  {option}
+                <SelectItem key={option.value.toString()} value={option.value.toString()}>
+                  {option.label}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -220,16 +196,19 @@ const FormFiller: React.FC<FormFillerProps> = ({ templates, onSubmit }) => {
                 <h3 className="text-lg font-semibold">{section.title}</h3>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="grid grid-cols-12 gap-4">
                   {section.fields.map((field) => (
-                    <div key={field.id} className="space-y-2">
+                    <div
+                    key={field.id}
+                    className={`col-span-${field.colSpan || 12}`} // use colSpan or default full width
+                    >
                       <label className="block text-sm font-medium text-gray-700">
                         {field.label}
                         {field.required && <span className="text-red-500 ml-1">*</span>}
                       </label>
                       {renderField(field)}
-                    </div>
-                  ))}
+                      </div>
+                      ))}
                 </div>
               </CardContent>
             </Card>

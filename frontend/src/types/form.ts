@@ -22,6 +22,7 @@ export interface FormTemplate {
     description?: string;
     order: number;
     fields: FormField[];
+    type: 'standard' | 'calculation';
   }
   
   export interface FormField {
@@ -38,6 +39,10 @@ export interface FormTemplate {
     validations?: FieldValidation[];
     dependsOn?: FieldDependency[];
     formula?: string;
+    row?: number;
+    colSpan?: number; // e.g., spans 1-12 columns in a grid system
+    documentMapping?: string;
+    calculationFormula?: string;
   }
   
   export type FieldType = 'text' | 'number' | 'select' | 'multiselect' | 'date' | 

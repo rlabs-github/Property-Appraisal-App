@@ -1,28 +1,14 @@
 /// src/components/appraisal-tools/forms/FormBuilder.tsx
 import React, { useState } from 'react';
-import { Plus, Trash2, MoveVertical, Calculator, Save, FileDown } from 'lucide-react';
+import { Plus, Trash2, Calculator, Save, FileDown } from 'lucide-react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import type { FormField, FormSection } from '@/types/form';
 
-interface Field {
-  id: string;
-  type: 'text' | 'number' | 'select' | 'calculation' | 'currency';
-  label: string;
-  required: boolean;
-  placeholder: string;
-  documentMapping?: string;
-  calculationFormula?: string;
-  options?: string[];
-}
-
-interface Section {
-  id: string;
-  type: 'standard' | 'calculation';
-  title: string;
-  fields: Field[];
-}
+type Field = FormField;
+type Section = FormSection;
 
 interface FormBuilderProps {
   onSave?: (formData: { name: string; sections: Section[] }) => Promise<void>;
@@ -38,10 +24,11 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
   const [isDirty, setIsDirty] = useState(false);
 
   const addSection = (type: Section['type']) => {
-    const newSection = {
+    const newSection: Section = {
       id: `section-${Date.now()}`,
       type,
       title: `New ${type} Section`,
+      order: sections.length,
       fields: [],
     };
     setSections([...sections, newSection]);
@@ -49,11 +36,17 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
   };
 
   const addField = (sectionId: string, type: Field['type']) => {
+    const timestamp = Date.now().toString();
+    const targetSection = sections.find((s) => s.id === sectionId);
+    const order = targetSection?.fields.length ?? 0;
+
     const newField: Field = {
-      id: `field-${Date.now()}`,
+      id: `field-${timestamp}`,
+      key: `field_${timestamp}`,
       type,
       label: `New ${type} Field`,
       required: false,
+      order,
       placeholder: '',
       documentMapping: '',
       calculationFormula: type === 'calculation' ? '' : undefined,
@@ -99,18 +92,40 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
 
   const renderFieldEditor = (field: Field, sectionId: string) => (
     <div key={field.id} className="border rounded-lg p-4 bg-gray-50 space-y-4">
-      <div className="flex justify-between items-center">
-        <label htmlFor={`field-label-${field.id}`} className="text-sm">
-          Field Label
-        </label>
-        <Input
-          id={`field-label-${field.id}`}
-          type="text"
-          value={field.label}
-          onChange={(e) => updateField(sectionId, field.id, { label: e.target.value })}
-          placeholder="Field Label"
-          className="text-sm font-medium"
-        />
+      <div className="flex justify-between items-center gap-4">
+        <div className="flex-1 space-y-1">
+          <label htmlFor={`field-label-${field.id}`} className="text-sm">
+            Field Label
+          </label>
+          <Input
+            id={`field-label-${field.id}`}
+            type="text"
+            value={field.label}
+            onChange={(e) => updateField(sectionId, field.id, { label: e.target.value })}
+            placeholder="Field Label"
+            className="text-sm font-medium"
+          />
+        </div>
+
+        <div className="space-y-1">
+          <label htmlFor={`col-span-${field.id}`} className="text-sm">
+            Width (colSpan 1–12)
+          </label>
+          <Input
+            id={`col-span-${field.id}`}
+            type="number"
+            min={1}
+            max={12}
+            value={field.colSpan ?? 12}
+            onChange={(e) =>
+              updateField(sectionId, field.id, {
+                colSpan: Math.min(Math.max(Number(e.target.value), 1), 12),
+              })
+            }
+            className="w-24 text-sm"
+          />
+        </div>
+
         <Button
           variant="ghost"
           size="sm"
@@ -172,8 +187,10 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
           id={`document-mapping-${field.id}`}
           type="text"
           value={field.documentMapping}
-          onChange={(e) => updateField(sectionId, field.id, { documentMapping: e.target.value })}
-          placeholder="Document placeholder (e.g., {property_address})"
+          onChange={(e) =>
+            updateField(sectionId, field.id, { documentMapping: e.target.value })
+          }
+          placeholder="e.g., {property_address}"
           className="w-full text-sm"
         />
 
@@ -223,19 +240,11 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
         <div className="w-64 border-r border-gray-200 p-4 bg-white">
           <h3 className="font-semibold mb-4">Add Section</h3>
           <div className="space-y-2">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => addSection('standard')}
-            >
+            <Button variant="outline" className="w-full" onClick={() => addSection('standard')}>
               <Plus className="w-4 h-4 mr-2" />
               Standard Section
             </Button>
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={() => addSection('calculation')}
-            >
+            <Button variant="outline" className="w-full" onClick={() => addSection('calculation')}>
               <Calculator className="w-4 h-4 mr-2" />
               Calculation Section
             </Button>
