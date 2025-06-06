@@ -16,12 +16,17 @@ export interface FormTemplate {
     updatedAt: string;
   }
   
+  export interface FormRow {
+    id: string;
+    fields: FormField[];
+  }
+  
   export interface FormSection {
     id: string;
     title: string;
     description?: string;
     order: number;
-    fields: FormField[];
+    rows: FormRow[];
     type: 'standard' | 'calculation';
   }
   

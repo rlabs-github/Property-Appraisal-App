@@ -6,6 +6,22 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import type { FormField, FormSection } from '@/types/form';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  verticalListSortingStrategy,
+  horizontalListSortingStrategy,
+  useSortable,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 type Field = FormField;
 type Section = FormSection;
@@ -18,10 +34,53 @@ interface FormBuilderProps {
   };
 }
 
+// Sortable Row component
+function SortableRow({ row, sectionId, children }: { row: any; sectionId: string; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: row.id,
+  });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    background: isDragging ? '#f0f0f0' : undefined,
+  };
+  return (
+    <div ref={setNodeRef} style={style} {...attributes} className="relative">
+      <div {...listeners} className="absolute left-0 top-1/2 -translate-y-1/2 cursor-grab z-10 p-1">
+        <span title="Drag row">☰</span>
+      </div>
+      <div className="pl-6">{children}</div>
+    </div>
+  );
+}
+
+// Sortable Field component
+function SortableField({ field, sectionId, rowId, children }: { field: any; sectionId: string; rowId: string; children: React.ReactNode }) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: field.id,
+  });
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : 1,
+    background: isDragging ? '#f9fafb' : undefined,
+  };
+  return (
+    <div ref={setNodeRef} style={style} className="relative col-span-12">
+      <div {...listeners} className="absolute left-0 top-1/2 -translate-y-1/2 cursor-grab z-10 p-1">
+        <span title="Drag field">⋮</span>
+      </div>
+      <div className="pl-6">{children}</div>
+    </div>
+  );
+}
+
 const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
   const [templateName, setTemplateName] = useState(initialData?.name ?? '');
   const [sections, setSections] = useState<Section[]>(initialData?.sections ?? []);
   const [isDirty, setIsDirty] = useState(false);
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const addSection = (type: Section['type']) => {
     const newSection: Section = {
@@ -29,52 +88,152 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
       type,
       title: `New ${type} Section`,
       order: sections.length,
-      fields: [],
+      rows: [],
     };
     setSections([...sections, newSection]);
     setIsDirty(true);
   };
 
-  const addField = (sectionId: string, type: Field['type']) => {
-    const timestamp = Date.now().toString();
-    const targetSection = sections.find((s) => s.id === sectionId);
-    const order = targetSection?.fields.length ?? 0;
-
-    const newField: Field = {
-      id: `field-${timestamp}`,
-      key: `field_${timestamp}`,
-      type,
-      label: `New ${type} Field`,
-      required: false,
-      order,
-      placeholder: '',
-      documentMapping: '',
-      calculationFormula: type === 'calculation' ? '' : undefined,
-      options: type === 'select' ? [] : undefined,
-    };
-
+  const addRow = (sectionId: string) => {
     setSections((prevSections) =>
       prevSections.map((section) =>
         section.id === sectionId
-          ? { ...section, fields: [...section.fields, newField] }
+          ? {
+              ...section,
+              rows: [
+                ...section.rows,
+                { id: `row-${Date.now()}`, fields: [] },
+              ],
+            }
           : section
       )
     );
     setIsDirty(true);
   };
 
-  const updateField = (sectionId: string, fieldId: string, updates: Partial<Field>) => {
+  const addField = (sectionId: string, rowId: string, type: Field['type']) => {
+    const timestamp = Date.now().toString();
+    const newField: Field = {
+      id: `field-${timestamp}`,
+      key: `field_${timestamp}`,
+      type,
+      label: `New ${type} Field`,
+      required: false,
+      order: 0,
+      placeholder: '',
+      documentMapping: '',
+      calculationFormula: type === 'calculation' ? '' : undefined,
+      options: type === 'select' ? [] : undefined,
+    };
     setSections((prevSections) =>
       prevSections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
-              fields: section.fields.map((field) =>
-                field.id === fieldId ? { ...field, ...updates } : field
+              rows: section.rows.map((row) =>
+                row.id === rowId
+                  ? { ...row, fields: [...row.fields, newField] }
+                  : row
               ),
             }
           : section
       )
+    );
+    setIsDirty(true);
+  };
+
+  const removeRow = (sectionId: string, rowId: string) => {
+    setSections((prevSections) =>
+      prevSections.map((section) =>
+        section.id === sectionId
+          ? { ...section, rows: section.rows.filter((row) => row.id !== rowId) }
+          : section
+      )
+    );
+    setIsDirty(true);
+  };
+
+  const removeField = (sectionId: string, rowId: string, fieldId: string) => {
+    setSections((prevSections) =>
+      prevSections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              rows: section.rows.map((row) =>
+                row.id === rowId
+                  ? { ...row, fields: row.fields.filter((f) => f.id !== fieldId) }
+                  : row
+              ),
+            }
+          : section
+      )
+    );
+    setIsDirty(true);
+  };
+
+  const updateField = (sectionId: string, rowId: string, fieldId: string, updates: Partial<Field>) => {
+    setSections((prevSections) =>
+      prevSections.map((section) =>
+        section.id === sectionId
+          ? {
+              ...section,
+              rows: section.rows.map((row) =>
+                row.id === rowId
+                  ? {
+                      ...row,
+                      fields: row.fields.map((field) =>
+                        field.id === fieldId ? { ...field, ...updates } : field
+                      ),
+                    }
+                  : row
+              ),
+            }
+          : section
+      )
+    );
+    setIsDirty(true);
+  };
+
+  // Handle row drag end
+  const handleRowDragEnd = (sectionId: string, event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.id !== sectionId) return section;
+        const oldIndex = section.rows.findIndex((row) => row.id === active.id);
+        const newIndex = section.rows.findIndex((row) => row.id === over.id);
+        if (oldIndex === -1 || newIndex === -1) return section;
+        return {
+          ...section,
+          rows: arrayMove(section.rows, oldIndex, newIndex),
+        };
+      })
+    );
+    setIsDirty(true);
+  };
+
+  // Handle field drag end
+  const handleFieldDragEnd = (sectionId: string, rowId: string, event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    setSections((prevSections) =>
+      prevSections.map((section) => {
+        if (section.id !== sectionId) return section;
+        return {
+          ...section,
+          rows: section.rows.map((row) => {
+            if (row.id !== rowId) return row;
+            const oldIndex = row.fields.findIndex((field) => field.id === active.id);
+            const newIndex = row.fields.findIndex((field) => field.id === over.id);
+            if (oldIndex === -1 || newIndex === -1) return row;
+            return {
+              ...row,
+              fields: arrayMove(row.fields, oldIndex, newIndex),
+            };
+          }),
+        };
+      })
     );
     setIsDirty(true);
   };
@@ -90,7 +249,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
     }
   };
 
-  const renderFieldEditor = (field: Field, sectionId: string) => (
+  const renderFieldEditor = (field: Field, sectionId: string, rowId: string) => (
     <div key={field.id} className="border rounded-lg p-4 bg-gray-50 space-y-4">
       <div className="flex justify-between items-center gap-4">
         <div className="flex-1 space-y-1">
@@ -101,7 +260,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
             id={`field-label-${field.id}`}
             type="text"
             value={field.label}
-            onChange={(e) => updateField(sectionId, field.id, { label: e.target.value })}
+            onChange={(e) => updateField(sectionId, rowId, field.id, { label: e.target.value })}
             placeholder="Field Label"
             className="text-sm font-medium"
           />
@@ -118,7 +277,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
             max={12}
             value={field.colSpan ?? 12}
             onChange={(e) =>
-              updateField(sectionId, field.id, {
+              updateField(sectionId, rowId, field.id, {
                 colSpan: Math.min(Math.max(Number(e.target.value), 1), 12),
               })
             }
@@ -130,13 +289,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
           variant="ghost"
           size="sm"
           onClick={() => {
-            setSections((prevSections) =>
-              prevSections.map((section) => ({
-                ...section,
-                fields: section.fields.filter((f) => f.id !== field.id),
-              }))
-            );
-            setIsDirty(true);
+            removeField(sectionId, rowId, field.id);
           }}
         >
           <Trash2 className="w-4 h-4 text-red-500" />
@@ -151,7 +304,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
           <Select
             value={field.type}
             onValueChange={(value: Field['type']) =>
-              updateField(sectionId, field.id, { type: value })
+              updateField(sectionId, rowId, field.id, { type: value })
             }
           >
             <SelectTrigger id={`field-type-${field.id}`} className="w-32">
@@ -172,7 +325,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
             id={`required-${field.id}`}
             type="checkbox"
             checked={field.required}
-            onChange={(e) => updateField(sectionId, field.id, { required: e.target.checked })}
+            onChange={(e) => updateField(sectionId, rowId, field.id, { required: e.target.checked })}
             className="rounded border-gray-300"
           />
           <label htmlFor={`required-${field.id}`} className="text-sm">
@@ -188,7 +341,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
           type="text"
           value={field.documentMapping}
           onChange={(e) =>
-            updateField(sectionId, field.id, { documentMapping: e.target.value })
+            updateField(sectionId, rowId, field.id, { documentMapping: e.target.value })
           }
           placeholder="e.g., {property_address}"
           className="w-full text-sm"
@@ -199,7 +352,7 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
             type="text"
             value={field.calculationFormula}
             onChange={(e) =>
-              updateField(sectionId, field.id, { calculationFormula: e.target.value })
+              updateField(sectionId, rowId, field.id, { calculationFormula: e.target.value })
             }
             placeholder="Calculation formula (e.g., field1 * field2)"
             className="w-full text-sm"
@@ -284,15 +437,69 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
                 </div>
               </CardHeader>
               <CardContent>
-                {section.fields.map((field) => renderFieldEditor(field, section.id))}
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={(event: DragEndEvent) => handleRowDragEnd(section.id, event)}
+                >
+                  <SortableContext
+                    items={section.rows.map((row) => row.id)}
+                    strategy={verticalListSortingStrategy}
+                  >
+                    {section.rows.map((row) => (
+                      <SortableRow key={row.id} row={row} sectionId={section.id}>
+                        <DndContext
+                          sensors={sensors}
+                          collisionDetection={closestCenter}
+                          onDragEnd={(event: DragEndEvent) => handleFieldDragEnd(section.id, row.id, event)}
+                        >
+                          <SortableContext
+                            items={row.fields.map((field) => field.id)}
+                            strategy={horizontalListSortingStrategy}
+                          >
+                            <div className="grid grid-cols-12 gap-4 mb-4">
+                              {row.fields.map((field) => (
+                                <SortableField
+                                  key={field.id}
+                                  field={field}
+                                  sectionId={section.id}
+                                  rowId={row.id}
+                                >
+                                  {renderFieldEditor(field, section.id, row.id)}
+                                </SortableField>
+                              ))}
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => addField(section.id, row.id, 'text')}
+                                className="text-blue-600"
+                              >
+                                <Plus className="w-4 h-4 mr-1" />
+                                Add Field
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => removeRow(section.id, row.id)}
+                                className="text-red-500 ml-2"
+                              >
+                                Remove Row
+                              </Button>
+                            </div>
+                          </SortableContext>
+                        </DndContext>
+                      </SortableRow>
+                    ))}
+                  </SortableContext>
+                </DndContext>
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => addField(section.id, 'text')}
-                  className="text-blue-600"
+                  onClick={() => addRow(section.id)}
+                  className="text-green-600 mt-2"
                 >
                   <Plus className="w-4 h-4 mr-1" />
-                  Add Field
+                  Add Row
                 </Button>
               </CardContent>
             </Card>
