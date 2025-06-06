@@ -3,5 +3,11 @@
     "@dnd-kit/core": "^6.3.1",
     "@dnd-kit/sortable": "^10.0.0",
     "firebase": "^11.8.1"
+  },
+  "devDependencies": {
+    "json-server": "^1.0.0-beta.3"
+  },
+  "scripts": {
+    "mock-api": "json-server --watch db.json --port 3001"
   }
 }

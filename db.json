@@ -1,0 +1,17 @@
+{
+  "users": [
+    { "id": "demo", "email": "demo@example.com", "name": "Demo User" }
+  ],
+  "forms": [
+    { "id": "form1", "name": "Demo Form 1", "sections": [], "createdAt": "2024-01-01T00:00:00Z" },
+    { "id": "form2", "name": "Demo Form 2", "sections": [], "createdAt": "2024-01-02T00:00:00Z" }
+  ],
+  "templates": [
+    { "id": "template1", "name": "Demo Template 1", "sections": [], "createdAt": "2024-01-01T00:00:00Z" },
+    { "id": "template2", "name": "Demo Template 2", "sections": [], "createdAt": "2024-01-02T00:00:00Z" }
+  ],
+  "documents": [
+    { "id": "doc1", "name": "Demo Document 1", "status": "draft", "createdAt": "2024-01-01T00:00:00Z" },
+    { "id": "doc2", "name": "Demo Document 2", "status": "completed", "createdAt": "2024-01-02T00:00:00Z" }
+  ]
+} 
