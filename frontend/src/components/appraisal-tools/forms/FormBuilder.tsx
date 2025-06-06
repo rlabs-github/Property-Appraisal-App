@@ -459,14 +459,15 @@ const FormBuilder: React.FC<FormBuilderProps> = ({ onSave, initialData }) => {
                           >
                             <div className="grid grid-cols-12 gap-4 mb-4">
                               {row.fields.map((field) => (
-                                <SortableField
-                                  key={field.id}
-                                  field={field}
-                                  sectionId={section.id}
-                                  rowId={row.id}
-                                >
-                                  {renderFieldEditor(field, section.id, row.id)}
-                                </SortableField>
+                                <div key={field.id} className={`col-span-${field.colSpan || 12}`}>
+                                  <SortableField
+                                    field={field}
+                                    sectionId={section.id}
+                                    rowId={row.id}
+                                  >
+                                    {renderFieldEditor(field, section.id, row.id)}
+                                  </SortableField>
+                                </div>
                               ))}
                               <Button
                                 variant="outline"
